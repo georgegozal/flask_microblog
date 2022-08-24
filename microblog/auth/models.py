@@ -10,8 +10,7 @@ class Users(db.Model,UserMixin):
     username = db.Column(db.String(20),nullable=False,unique=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False,unique=True)
-    # favorite_color = db.Column(db.String(120))
-    # about_author = db.Column(db.String(500),nullable=True)
+    about_author = db.Column(db.String(500),nullable=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     profile_pic = db.Column(db.String(128),nullable=True)
     password_hash = db.Column(db.String(128))
@@ -21,7 +20,7 @@ class Users(db.Model,UserMixin):
         self.name = name
         self.username = username
         self.email = email
-        self.password_hash = generate_password_hash(password_hash)
+        self.password_hash = password_hash#generate_password_hash(password_hash,method='sha256')
 
     def __repr__(self):
         return "<Name %r>" % self.name
