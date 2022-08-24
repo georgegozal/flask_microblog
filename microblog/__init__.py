@@ -16,14 +16,17 @@ app.config['SECRET_KEY'] = "secret_key"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+# db.init_app(app)
 migrate = Migrate(app,db)
+
 # Add CKEditor
 ckeditor = CKEditor(app)
 
-from microblog.posts.views import posts
+from microblog import views
+from microblog.posts.views import post_view
 from microblog.auth.views import auth
-app.register_blueprint(posts)
-app.register_blueprint(auth)
+app.register_blueprint(post_view, url_prefix='/')
+app.register_blueprint(auth, url_prefix='/')
 
 from microblog.auth.models import Users
 from microblog.posts.models import Posts
@@ -32,4 +35,10 @@ if not os.path.exists('users.db'):
     db.create_all(app=app)
     print('Created Database!')
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "auth.login"
 
+@login_manager.user_loader
+def load_user(id):
+    return Users.query.get(int(id))
