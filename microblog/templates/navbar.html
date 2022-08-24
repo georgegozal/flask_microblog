@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('view.home') }}">Home</a>
+        <a class="navbar-brand" href="/">Home</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -8,38 +8,27 @@
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url_for('view.logout')}}">Logout</a>
+                        <a class="nav-link active" aria-current="page" href="{{url_for('auth.logout')}}">Logout</a>
                     </li>
-                    {% if current_user.id == 1 %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url_for('view.admin')}}">Admin</a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url_for('view.dashboard')}}">Dashboard</a>
+                        <a class="nav-link active" aria-current="page" href="{{url_for('auth.dashboard')}}">Dashboard</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url_for('view.add_user')}}">Register</a>
+                        <a class="nav-link active" aria-current="page" href="{{url_for('auth.register')}}">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url_for('view.login')}}">Login</a>
+                        <a class="nav-link active" aria-current="page" href="{{url_for('auth.login')}}">Login</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('view.add_post')}}">Add Blog Post</a>
+                    <a class="nav-link active" aria-current="page" href="{{url_for('posts.add')}}">Add Blog Post</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('view.posts')}}">Posts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('view.name')}}">Name</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="https://getbootstrap.com/docs/5.2/getting-started/introduction/" target="_blank">Bootstrap docs</a>
+                    <a class="nav-link active" aria-current="page" href="{{url_for('posts.list')}}">Posts</a>
                 </li>
             </ul>
-            <form method="POST" action="{{url_for('view.search')}}" class="d-flex" role="search">
+            <form method="POST" action="{{url_for('posts.search')}}" class="d-flex" role="search">
                 {{ form.hidden_tag() }}
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
                 <button class="btn btn-outline-success" type="submit">Search</button>
