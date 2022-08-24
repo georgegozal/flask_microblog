@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request, flash ,redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from .forms import LoginForm
+from werkzeug.utils import secure_filename
+from .forms import LoginForm,UserForm
+import uuid as uuid
 from .models import Users
+from microblog import db
 
 
 
@@ -15,12 +18,17 @@ def login():
 
     if form.validate_on_submit():
         user = Users.query.filter_by(username=form.username.data).first()
+
+        print(user)
+        print(check_password_hash(user.password_hash, form.password.data))
+        print(user.password_hash)
+        print(form.password.data)
         if user:
             # Check the hash
             if check_password_hash(user.password_hash, form.password.data):
                 login_user(user)
                 flash("Login Successfully",category="success")
-                return redirect(url_for('view.dashboard'))
+                return redirect(url_for('auth.dashboard'))
             else:
                 flash("Wrong Password - Try Again!",category="error")
         else:
@@ -36,7 +44,7 @@ def login():
 def logout():
     logout_user()
     flash("You Have Been Logged Out!")
-    return redirect(url_for('view.login'))
+    return redirect(url_for('auth.login'))
 
 # Create Dashboard Page
 @auth.route('/dashboard',methods=['GET','POST'])
@@ -49,7 +57,6 @@ def dashboard():
         print(request.form)
         user.name = request.form['name']
         user.email = request.form['email']
-        user.favorite_color = request.form['favorite_color']
         user.username = request.form['username']
         user.about_author = request.form['about_author']
         # get uploaded file/image
@@ -69,7 +76,7 @@ def dashboard():
             pic_name = str(uuid.uuid1()) + "_" + pic_filename
 
             # Save That Image
-            form.profile_pic.data.save(f'static/images/{pic_name}')
+            form.profile_pic.data.save(f'microblog/static/uploads/{pic_name}')
             # user.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER']))
             # save pic name in user model
             user.profile_pic = pic_name
@@ -95,11 +102,73 @@ def dashboard():
             form=form
         )
 
+    form = UserForm()
+    id = current_user.id
+    user = Users.query.get_or_404(id)
+    if request.method == 'POST':
+        print(request.form)
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.username = request.form['username']
+        user.about_author = request.form['about_author']
+        # get uploaded file/image
+        #user.profile_pic = request.files['profile_pic'] 
+        # Gram Image Name
+        print(form.profile_pic.data.filename)
+        print(form.profile_pic.data)
+        try:
+            pic_filename = secure_filename(form.profile_pic.data.filename)
+            print(form.profile_pic.data.filename)
+            print(form.profile_pic.data)
+            print(pic_filename,'ფაილნამე')
+        except AttributeError:
+            if user.profile_pic:
+                pic_filename = '_'.join(user.profile_pic.split('_')[1:])
+                print(pic_filename,'ფაილნამე')
+            else:
+                pic_filename = None
+                print(pic_filename,'ფაილნამე')
+        if pic_filename:
+            # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
+            if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
+                # Set UUID  
+                # this gives us unique name
+                # we need this incase two user uploaded pic with same name
+                pic_name = str(uuid.uuid1()) + "_" + pic_filename
+
+                # Save That Image
+                form.profile_pic.data.save(f'static/uploads/{pic_name}')
+                # user.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER']))
+                # save pic name in user model
+                user.profile_pic = pic_name
+        try:
+            db.session.commit()
+            flash('User Updated Successfully!',category='success')
+            return render_template(
+                'dashboard.html',
+                user=user,
+                form=form
+            )
+        except:
+            flash('Error!')
+            return render_template(
+                'dashboard.html',
+                user=user,
+                form=form
+            )
+    else:
+        return render_template(
+            'dashboard.html',
+            user=current_user,
+            form=form
+        )
+
 # Register New User
 @auth.route('/user/add',methods=['GET','POST'])
-def add_user():
+def register():
     form = UserForm()
     if form.validate_on_submit():
+        print(request.form)
         email = form.email.data
         username = form.username.data
         try:
@@ -118,7 +187,6 @@ def add_user():
                 username = username,
                 name = form.name.data,
                 email = form.email.data,
-                favorite_color = form.favorite_color.data,
                 password_hash = generate_password_hash(form.password_hash.data, 'sha256')
                 )
             # user.password(form.password_hash.data)
@@ -126,7 +194,7 @@ def add_user():
                 db.session.add(user)
                 db.session.commit()
                 flash("User Added Successfully!")
-                return redirect('/user/add')
+                return redirect(url_for('auth.dashboard'))
             except:
                 flash('Error',category='error')
     try:
