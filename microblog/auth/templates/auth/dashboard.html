@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<br>
+
+
+<br><br>
+<h5 class="card-title">Welcome To You User Dashboard...</h5>
+<br>
+<div class="card">
+    <div class="card-header">
+        {{ current_user.name }}
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-8">
+                        <strong>Name: </strong>{{ current_user.name }}<br>
+                        <strong>Username: </strong>{{ current_user.username }}<br>
+                        <strong>User Id: </strong>{{ current_user.id }}<br>
+                        <strong>Email: </strong>{{ current_user.email }}<br>
+                        <strong>About Author: </strong>{{ current_user.about_author}}<br>
+                        <strong>Date Joined: </strong>{{ current_user.date_added }}<br><br>
+
+
+                    </div>
+                    <div class="col-4">
+                        {% if current_user.profile_pic %}
+                            <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic)}}" alt="default_profile_pic" height="150" align="right">
+                        {% else %}
+                            <img src="{{url_for('static',filename='uploads/default-profile-picture.jpeg')}}" alt="default_profile_pic" height="150" align="right">
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </p>
+        <a href="{{url_for('auth.logout')}}" class="btn btn-secondary btn-sm">Logout</a>
+        {#<a href="{{url_for('view.update1',id=current_user.id)}}" class="btn  btn-secondary btn-sm">Update Profile</a>
+        <a href="{{url_for('view.delete',id=current_user.id)}}" class="btn  btn-danger btn-sm">Delete Profile</a>
+    #}
+    </div>
+</div>
+
+<br>
+
+<div class="card">
+    <div class="card-header">
+        Update Profile
+    </div>
+    <div class="card-body">
+        <form action="/dashboard" method="post" enctype="multipart/form-data">{#enctype="multipart/form-data" - this is needed to upload a pic#}
+            {{ form.hidden_tag() }}
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", value=current_user.name) }}
+            <br>
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control", value=current_user.username) }}
+            <br>
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", value=current_user.email) }}
+            <br>
+
+            {#{ form.about_author.label(class="form-label") }}
+            {{ form.about_author(class="form-control", value=current_user.about_author) }#}
+            <textarea class="form-control" name="about_author">
+{{ current_user.about_author }}
+            </textarea>
+            <br>
+            {#{ form.profile_pic.label(class='form-label') }#}
+            {#{ form.profile_pic(class="form-control", value=current_user.profile_pic)}#}
+            <input type="file" name="profile_pic" class="form-control" accept=".png, .jpg, .jpeg"/>
+
+            <br>
+            
+            {{ form.submit(class="btn  btn-outline-success btn-sm") }}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
