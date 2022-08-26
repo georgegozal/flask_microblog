@@ -22,17 +22,18 @@ def list():
 def post(id):
     form = CommentForm()
     post = Posts.query.get_or_404(id)
-    comments = Comments.query.order_by(Comments.date_posted.desc()).all()
+    comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
 
 
     if form.validate_on_submit():
         content = form.content.data
         new_comment = Comments(
             content = content,
-            poster_id = current_user.id
+            poster_id = current_user.id,
+            post_id = post.id
         )
 
-        post.commenter_id = current_user.id
+        # post.comment_id = comments[0].id
 
         db.session.add(new_comment)
         db.session.commit()
@@ -42,6 +43,7 @@ def post(id):
     return render_template(
         'post.html',
         post = post,
+        # commentlen=commentlen,
         comments=comments,
         form=form
     )

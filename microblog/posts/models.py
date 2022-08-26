@@ -13,4 +13,4 @@ class Posts(db.Model):
     # Foreign Key To Link Users # many 2 one
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # Foreign Key To Link Comments #one to one
-    commenter_id = db.Column(db.Integer,db.ForeignKey('comments.id')) 
+    # comment_id = db.Column(db.Integer,db.ForeignKey('comments.id')) 

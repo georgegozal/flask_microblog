@@ -10,3 +10,4 @@ class Comments(db.Model):
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     # Foreign Key To Link Users 
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
