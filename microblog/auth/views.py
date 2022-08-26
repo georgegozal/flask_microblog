@@ -20,8 +20,8 @@ def login():
         user = Users.query.filter_by(username=form.username.data).first()
 
         print(user)
-        print(check_password_hash(user.password_hash, form.password.data))
-        print(user.password_hash)
+        # print(check_password_hash(user.password_hash, form.password.data))
+        # print(user.password_hash)
         print(form.password.data)
         if user:
             # Check the hash
@@ -55,6 +55,7 @@ def dashboard():
     user = Users.query.get_or_404(id)
     if request.method == 'POST':
         # print(request.form)
+        # print(form.profile_pic.data)
         user.name = request.form['name']
         user.email = request.form['email']
         user.username = request.form['username']
@@ -62,30 +63,31 @@ def dashboard():
         # get uploaded file/image
         #user.profile_pic = request.files['profile_pic'] 
         # Gram Image Name
-        try:
-            pic_filename = secure_filename(form.profile_pic.data.filename)
-        except AttributeError:
-            pic_filename = '_'.join(user.profile_pic.split('_')[1:])
+        if form.profile_pic.data:
+            try:
+                pic_filename = secure_filename(form.profile_pic.data.filename)
+            except AttributeError:
+                pic_filename = '_'.join(user.profile_pic.split('_')[1:])
 
 
-        # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
-        if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
-            # Set UUID  
-            # this gives us unique name
-            # we need this incase two user uploaded pic with same name
-            pic_name = str(uuid.uuid1()) + "_" + pic_filename
+            # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
+            if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
+                # Set UUID  
+                # this gives us unique name
+                # we need this incase two user uploaded pic with same name
+                pic_name = str(uuid.uuid1()) + "_" + pic_filename
 
-            # Save That Image
-            form.profile_pic.data.save(f'microblog/static/uploads/{pic_name}')
-            # user.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER']))
-            # save pic name in user model
-            user.profile_pic = pic_name
+                # Save That Image
+                form.profile_pic.data.save(f'microblog/static/uploads/{pic_name}')
+                # user.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER']))
+                # save pic name in user model
+                user.profile_pic = pic_name
         try:
             db.session.commit()
             flash('User Updated Successfully!',category='success')
             return render_template(
                 'dashboard.html',
-                user=user,
+                user=current_user,
                 form=form
             )
         except:
@@ -101,7 +103,6 @@ def dashboard():
             user=current_user,
             form=form
         )
-
 # Register New User
 @auth.route('/user/add',methods=['GET','POST'])
 def register():

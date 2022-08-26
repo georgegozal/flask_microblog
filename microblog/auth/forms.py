@@ -16,7 +16,8 @@ class UserForm(FlaskForm):
     email = EmailField('Email',[DataRequired()])
     password_hash = PasswordField('Password',validators=[DataRequired(),EqualTo('password_hash2',message='Passwords Must MAtch!')])
     password_hash2 = PasswordField('Confirm Password',validators=[DataRequired()])
-    profile_pic = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['png','jpg'])])
+    profile_pic = FileField('Profile Pic',validators=[FileAllowed(['png','jpg'])])
+    # about_author = TextAreaField('About Author')
     submit = SubmitField("Submit")
 
 class PasswordForm(FlaskForm):
