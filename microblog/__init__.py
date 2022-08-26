@@ -25,11 +25,16 @@ ckeditor = CKEditor(app)
 from microblog import views
 from microblog.posts.views import post_view
 from microblog.auth.views import auth
+from microblog.comments.views import comments
 app.register_blueprint(post_view, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
+app.register_blueprint(comments, url_prefix='/')
+
 
 from microblog.auth.models import Users
 from microblog.posts.models import Posts
+from microblog.comments.models import Comments
+
 
 if not os.path.exists('users.db'):
     db.create_all(app=app)

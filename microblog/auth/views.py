@@ -54,7 +54,7 @@ def dashboard():
     id = current_user.id
     user = Users.query.get_or_404(id)
     if request.method == 'POST':
-        print(request.form)
+        # print(request.form)
         user.name = request.form['name']
         user.email = request.form['email']
         user.username = request.form['username']
@@ -102,73 +102,13 @@ def dashboard():
             form=form
         )
 
-    form = UserForm()
-    id = current_user.id
-    user = Users.query.get_or_404(id)
-    if request.method == 'POST':
-        print(request.form)
-        user.name = request.form['name']
-        user.email = request.form['email']
-        user.username = request.form['username']
-        user.about_author = request.form['about_author']
-        # get uploaded file/image
-        #user.profile_pic = request.files['profile_pic'] 
-        # Gram Image Name
-        print(form.profile_pic.data.filename)
-        print(form.profile_pic.data)
-        try:
-            pic_filename = secure_filename(form.profile_pic.data.filename)
-            print(form.profile_pic.data.filename)
-            print(form.profile_pic.data)
-            print(pic_filename,'ფაილნამე')
-        except AttributeError:
-            if user.profile_pic:
-                pic_filename = '_'.join(user.profile_pic.split('_')[1:])
-                print(pic_filename,'ფაილნამე')
-            else:
-                pic_filename = None
-                print(pic_filename,'ფაილნამე')
-        if pic_filename:
-            # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
-            if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
-                # Set UUID  
-                # this gives us unique name
-                # we need this incase two user uploaded pic with same name
-                pic_name = str(uuid.uuid1()) + "_" + pic_filename
-
-                # Save That Image
-                form.profile_pic.data.save(f'static/uploads/{pic_name}')
-                # user.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER']))
-                # save pic name in user model
-                user.profile_pic = pic_name
-        try:
-            db.session.commit()
-            flash('User Updated Successfully!',category='success')
-            return render_template(
-                'dashboard.html',
-                user=user,
-                form=form
-            )
-        except:
-            flash('Error!')
-            return render_template(
-                'dashboard.html',
-                user=user,
-                form=form
-            )
-    else:
-        return render_template(
-            'dashboard.html',
-            user=current_user,
-            form=form
-        )
-
 # Register New User
 @auth.route('/user/add',methods=['GET','POST'])
 def register():
     form = UserForm()
+    # print(request.form)
     if form.validate_on_submit():
-        print(request.form)
+        # print(request.form)
         email = form.email.data
         username = form.username.data
         try:
@@ -183,10 +123,24 @@ def register():
             user = None
             user1 = None
         if user is None and user1 is None:
+            # Gram Image Name
+            try:
+                pic_filename = secure_filename(form.profile_pic.data.filename)
+                # Set UUID  
+                # this gives us unique name
+                # we need this incase two user uploaded pic with same name
+                pic_name = str(uuid.uuid1()) + "_" + pic_filename
+                # Save That Image
+                form.profile_pic.data.save(f'microblog/static/uploads/{pic_name}')
+            except Exception as e:
+                pic_name = None
+                print(e)
+
             user = Users(
                 username = username,
                 name = form.name.data,
                 email = form.email.data,
+                profile_pic = pic_name,
                 password_hash = generate_password_hash(form.password_hash.data, 'sha256')
                 )
             # user.password(form.password_hash.data)
