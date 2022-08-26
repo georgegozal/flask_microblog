@@ -10,8 +10,8 @@ import os
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://dbuser:mypassword@localhost:5432/users'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://dbuser:mypassword@localhost:5432/microblog'
 app.config['SECRET_KEY'] = "secret_key"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
