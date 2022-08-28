@@ -14,3 +14,13 @@ class Posts(db.Model):
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # Foreign Key To Link Comments #one to one
     # comment_id = db.Column(db.Integer,db.ForeignKey('comments.id')) 
+
+class Comments(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer,primary_key=True)
+    content = db.Column(db.String(500))
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    # Foreign Key To Link Users 
+    poster_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
+    post_id = db.Column(db.Integer,db.ForeignKey('posts.id', ondelete="CASCADE"))

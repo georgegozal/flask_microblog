@@ -2,10 +2,8 @@ from crypt import methods
 from flask import Flask, flash,url_for, redirect,render_template,Blueprint, request
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
-from .models import Posts
-from .forms import PostForm,SearchForm
-from microblog.comments.forms import CommentForm
-from microblog.comments.models import Comments
+from .models import Posts,Comments
+from .forms import PostForm,SearchForm,CommentForm
 from microblog import db
 
 post_view = Blueprint('posts',__name__,template_folder="templates/posts")
