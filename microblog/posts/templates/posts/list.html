@@ -16,7 +16,13 @@
     {#<a href="{{ url_for('posts.like', id=post.id)}}">
         <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" height="18">
     </a>
-    {{ like|length  if post.id == like.post_id }#}
+    {{ like | selectattr("post.id","equalto","like.post_id") | list | count}} Likes}
+    {% for l in like %}
+        {% if post.id == l.post_id %}
+            {{ like|count}}
+        {% endif %}
+    {% endfor #}
+
 
     <br>
 

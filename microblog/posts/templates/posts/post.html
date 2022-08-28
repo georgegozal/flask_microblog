@@ -16,8 +16,8 @@
     {{ post.content|safe }} 
     <br>
     <a href="{{ url_for('posts.like', id=post.id)}}">
-        <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" height="18">
-    </a>{{ like|length }}  Likes
+        <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="18">
+    </a>{{ like|length }}  Likes 
 
     <br>
     <br><br>

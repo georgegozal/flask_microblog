@@ -13,7 +13,7 @@ post_view = Blueprint('posts',__name__,template_folder="templates/posts")
 @post_view.route('/posts')
 def list():
     posts = Posts.query.order_by(Posts.date_posted).all()
-    like = Like.query.filter_by().all()
+    like = Like.query.all()
     return render_template(
         'list.html',
         posts=posts,
