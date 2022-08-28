@@ -1,8 +1,8 @@
 from crypt import methods
-from flask import Flask, flash,url_for, redirect,render_template,Blueprint, request
+from flask import Flask, flash,url_for, redirect,render_template,Blueprint, request,jsonify
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
-from .models import Posts,Comments
+from .models import Posts,Comments, Like
 from .forms import PostForm,SearchForm,CommentForm
 from microblog import db
 
@@ -13,7 +13,11 @@ post_view = Blueprint('posts',__name__,template_folder="templates/posts")
 @post_view.route('/posts')
 def list():
     posts = Posts.query.order_by(Posts.date_posted).all()
-    return render_template('list.html',posts=posts)
+    like = Like.query.filter_by().all()
+    return render_template(
+        'list.html',
+        posts=posts,
+        like=like)
 
 # view one post # add  comments
 @post_view.route('/posts/<int:id>',methods=['GET','POST'])
@@ -21,7 +25,7 @@ def post(id):
     form = CommentForm()
     post = Posts.query.get_or_404(id)
     comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
-
+    like = Like.query.filter_by(post_id=post.id).all()
 
     if form.validate_on_submit():
         content = form.content.data
@@ -41,7 +45,8 @@ def post(id):
         'post.html',
         post = post,
         comments=comments,
-        form=form
+        form=form,
+        like=like
     )
 
 # Add Post Page
@@ -118,6 +123,7 @@ def delete(id):
         return redirect(url_for('posts.list'))
 
 @post_view.route('/delete/<post_id>/<comment_id>')
+@login_required
 def delete_comment(post_id,comment_id):
     comment = Comments.query.get_or_404(comment_id)
     if int(comment.commenter.id) == current_user.id:
@@ -132,6 +138,25 @@ def delete_comment(post_id,comment_id):
         flash("You Aren`t Authorized To Delete That Comment!",category='error')
         return redirect(url_for('posts.post', id=post_id))
 
+@post_view.route('/posts/<id>/like')#,methods=['POST'])
+@login_required
+def like(id):
+    # if request.method['POST']:
+    post = Posts.query.get_or_404(id)
+    like = Like.query.filter_by(
+        author=current_user.id, post_id=id).first()
+
+    if not post:
+        return jsonify({'error': 'Post does not exist.'}, 400)
+    elif like:
+        db.session.delete(like)
+        db.session.commit()
+    else:
+        like = Like(author=current_user.id,post_id=id)
+        db.session.add(like)
+        db.session.commit()
+    return redirect(url_for('posts.post', id=post.id))
+    # return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.author, post.likes)})
 
 @post_view.route('/search',methods=['POST'])
 def search():

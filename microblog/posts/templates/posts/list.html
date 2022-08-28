@@ -12,7 +12,14 @@
         Date Posted: {{ post.date_posted }} <br><br>
     </small>
     {{ post.content|safe }} <br>
+
+    {#<a href="{{ url_for('posts.like', id=post.id)}}">
+        <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" height="18">
+    </a>
+    {{ like|length  if post.id == like.post_id }#}
+
     <br>
+
     <a href="{{ url_for('posts.post', id=post.id ) }}" class="btn btn-outline-secondary btn-sm">View Post</a>
     {% if post.poster_id == current_user.id %}
         <a href="{{ url_for('posts.edit', id=post.id) }}" class="btn btn-outline-secondary btn-sm">Update</a>

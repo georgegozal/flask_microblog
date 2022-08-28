@@ -14,6 +14,12 @@
     </small>
 
     {{ post.content|safe }} 
+    <br>
+    <a href="{{ url_for('posts.like', id=post.id)}}">
+        <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" height="18">
+    </a>{{ like|length }}  Likes
+
+    <br>
     <br><br>
 
     <h3>Comments {{ comments|length }}</h3>
@@ -32,7 +38,9 @@
                 <h6><span style="color:#29a329">{{ comment.commenter.name }}:</span></h4>
                 <p>{{ comment.content }}</p>{{ comment.date_posted }}
                 {% if comment.commenter.id == current_user.id %}
-                    <a href="{{ url_for('posts.delete_comment', post_id=post.id, comment_id=comment.id) }}" title="Delete Comment"><img src="{{url_for('static',filename='uploads/delete.png')}}" alt="delete icon" height="20" align="center"></a>
+                    <a href="{{ url_for('posts.delete_comment', post_id=post.id, comment_id=comment.id) }}" title="Delete Comment">
+                        <img src="{{url_for('static',filename='uploads/delete.png')}}" alt="delete icon" height="20" align="center">
+                    </a>
                 {% endif %}
                 <br>
                 <br>
