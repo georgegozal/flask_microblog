@@ -31,8 +31,9 @@
             {% if comment.commenter.name %}
                 <h6><span style="color:#29a329">{{ comment.commenter.name }}:</span></h4>
                 <p>{{ comment.content }}</p>{{ comment.date_posted }}
-                {#<a href="{{ url_for('comments.delete', id=comment.id) }}" aria-label="Delete Comment"><img src="{{url_for('static',filename='uploads/delete.png')}}" alt="default_profile_pic" height="15" align="center"></a>#}
-
+                {% if comment.commenter.id == current_user.id %}
+                    <a href="{{ url_for('posts.delete_comment', post_id=post.id, comment_id=comment.id) }}" title="Delete Comment"><img src="{{url_for('static',filename='uploads/delete.png')}}" alt="delete icon" height="20" align="center"></a>
+                {% endif %}
                 <br>
                 <br>
             {% else %}

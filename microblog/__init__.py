@@ -30,7 +30,7 @@ app.register_blueprint(auth, url_prefix='/')
 
 
 from microblog.auth.models import Users
-from microblog.posts.models import Posts
+from microblog.posts.models import Posts,Like,Comments
 
 
 if not os.path.exists('users.db'):

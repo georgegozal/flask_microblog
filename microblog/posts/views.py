@@ -31,7 +31,6 @@ def post(id):
             post_id = post.id
         )
 
-        # post.comment_id = comments[0].id
 
         db.session.add(new_comment)
         db.session.commit()
@@ -41,7 +40,6 @@ def post(id):
     return render_template(
         'post.html',
         post = post,
-        # commentlen=commentlen,
         comments=comments,
         form=form
     )
@@ -119,10 +117,21 @@ def delete(id):
         flash("You Aren`t Authorized To Delete That Post!",category='error')
         return redirect(url_for('posts.list'))
 
-# @post_view.context_processor
-# def base():
-#     form = SearchForm()
-#     return dict(form=form)
+@post_view.route('/delete/<post_id>/<comment_id>')
+def delete_comment(post_id,comment_id):
+    comment = Comments.query.get_or_404(comment_id)
+    if int(comment.commenter.id) == current_user.id:
+        try:
+            db.session.delete(comment)
+            db.session.commit()
+            flash("Comment has been deleted",category='success')
+            return redirect(url_for('posts.post', id=post_id))
+        except:
+            flash('there was a problem deleting the comment',category='error')
+    else:
+        flash("You Aren`t Authorized To Delete That Comment!",category='error')
+        return redirect(url_for('posts.post', id=post_id))
+
 
 @post_view.route('/search',methods=['POST'])
 def search():

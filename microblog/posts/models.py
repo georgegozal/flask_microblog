@@ -24,3 +24,11 @@ class Comments(db.Model):
     # Foreign Key To Link Users 
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
     post_id = db.Column(db.Integer,db.ForeignKey('posts.id', ondelete="CASCADE"))
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+    author = db.Column(db.Integer, db.ForeignKey(
+        'users.id', ondelete="CASCADE"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey(
+        'posts.id', ondelete="CASCADE"), nullable=False)

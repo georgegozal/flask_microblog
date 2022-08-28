@@ -19,6 +19,8 @@ class Users(db.Model,UserMixin):
     posts = db.relationship('Posts',backref='poster')# poster.email to get user email# {{post.poster.email}} in jinja
     # User Can Have Many Comments # One to Many
     comments = db.relationship('Comments',backref='commenter')
+    # User Can have 
+    # likes = db.Column(db.Integer,db.ForeignKey('like.id'))
 
     def __init__(self,name,username,email,password_hash,profile_pic):
         self.name = name
