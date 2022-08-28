@@ -23,33 +23,35 @@
     <br><br>
 
     <h3>Comments {{ comments|length }}</h3>
+    <br>
+    <h7>Update {{comment.commenter.name}}`s comment</h7>
+    <br>
+    <br>
     <form method="post">
         {{ form.hidden_tag() }}
 
-        {{ form.content(class="form-control",placeholder="Write a comment...") }}
+        {{ form.content(class="form-control") }}
         <br>
-        {{ form.submit(class="btn btn-outline-success btn-sm")}}
+        <button class="btn btn-success btn-sm">Update Comment</button>
+        
     </form>
     <br>
 
     {% for comment in comments %}
         {% if comment.post_id == post.id %}
-            {% if comment.commenter.name %}
+        {% if comment.commenter.id != current_user.id %}
+            {% if comment.commenter.name  %}
                 <h6><span style="color:#29a329">{{ comment.commenter.name }}:</span></h4>
                 <p>{{ comment.content }}</p>{{ comment.date_posted }}
                 {% if comment.commenter.id == current_user.id %}
-                    <a href="{{ url_for('posts.delete_comment', post_id=post.id, comment_id=comment.id) }}" title="Delete Comment">
-                        <img src="{{url_for('static',filename='uploads/delete.png')}}" alt="delete icon" height="20" align="center">
-                    </a>
-                    <a href="{{url_for('posts.update_comment',comment_id=comment.id,post_id=post.id)}}" class="btn btn-outline-secondary btn-sm">
-                        Update
-                    </a>
+
                 {% endif %}
                 <br>
                 <br>
             {% else %}
                 <p>  {{ comment.content }}</p>
             {% endif %}
+        {% endif %}
         {% endif %}
     {% endfor %}
 

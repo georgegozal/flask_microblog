@@ -99,7 +99,8 @@ def edit(id):
         form.content.data = post.content
         return render_template(
             'edit.html',
-            form = form
+            form = form,
+            post=post
         )
     else:
         flash("You Aren`t Authorised To Edit This Post...",category='error')
@@ -121,6 +122,34 @@ def delete(id):
     else:
         flash("You Aren`t Authorized To Delete That Post!",category='error')
         return redirect(url_for('posts.list'))
+
+@post_view.route('/post/<post_id>/comments/update/<comment_id>',methods=['POST','GET'])
+def update_comment(comment_id,post_id):
+    form = CommentForm()
+    comment = Comments.query.get_or_404(comment_id)
+    post = Posts.query.get_or_404(post_id)
+    comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
+    like = Like.query.filter_by(post_id=post.id).all()
+
+    if form.validate_on_submit():
+        comment.content = form.content.data
+        db.session.commit()
+        flash('Comment has been added!',category='success')
+        return redirect(url_for(
+            'posts.post',
+            id=post.id))
+    if current_user.id == comment.commenter.id:
+        form.content.data = comment.content
+
+    return render_template(
+        'edit_comment.html',
+        post = post,
+        comments=comments,
+        comment=comment,
+        form=form,
+        like=like
+    )
+
 
 @post_view.route('/delete/<post_id>/<comment_id>')
 @login_required
