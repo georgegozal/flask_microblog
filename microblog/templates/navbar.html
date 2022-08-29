@@ -22,13 +22,13 @@
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('posts.add')}}">Add Blog Post</a>
+                    <a class="nav-link active" aria-current="page" href="{{url_for('post.add')}}">Add Blog Post</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{url_for('posts.list')}}">Posts</a>
+                    <a class="nav-link active" aria-current="page" href="{{url_for('post.list')}}">Posts</a>
                 </li>
             </ul>
-            <form method="POST" action="{{url_for('posts.search')}}" class="d-flex" role="search">
+            <form method="POST" action="{{url_for('post.search')}}" class="d-flex" role="search">
                 {{ form.hidden_tag() }}
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
                 <button class="btn btn-outline-success" type="submit">Search</button>

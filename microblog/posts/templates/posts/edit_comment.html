@@ -15,7 +15,7 @@
 
     {{ post.content|safe }} 
     <br>
-    <a href="{{ url_for('posts.like', id=post.id)}}">
+    <a href="{{ url_for('post.like', id=post.id)}}">
         <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="18">
     </a>{{ like|length }}  Likes 
 
@@ -57,10 +57,10 @@
 
 </div>
 
-<a href="{{ url_for('posts.list') }}" class="btn btn-outline-secondary btn-sm">Back To Blog</a>
+<a href="{{ url_for('post.list') }}" class="btn btn-outline-secondary btn-sm">Back To Blog</a>
 {% if post.poster_id == current_user.id %}
-    <a href="{{ url_for('posts.edit', id=post.id) }}" class="btn btn-outline-secondary btn-sm">Update</a>
-    <a href="{{ url_for('posts.delete', id=post.id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a>
+    <a href="{{ url_for('post.edit', id=post.id) }}" class="btn btn-outline-secondary btn-sm">Update</a>
+    <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a>
 {% endif %}
 
 {% endblock %}
