@@ -6,7 +6,7 @@ from .models import Posts,Comments, Like
 from .forms import PostForm,SearchForm,CommentForm
 from microblog import db
 
-post_view = Blueprint('posts',__name__,template_folder="templates/posts")
+post_view = Blueprint('post',__name__,template_folder="templates/posts")
 
 
 # view all posts
@@ -39,7 +39,7 @@ def post(id):
         db.session.add(new_comment)
         db.session.commit()
         flash('Comment has been added!',category='success')
-        return redirect(url_for('posts.post',id=post.id))
+        return redirect(url_for('post.post',id=post.id))
 
     return render_template(
         'post.html',
@@ -71,7 +71,7 @@ def add():
         db.session.commit()
         # return a message
         flash('Blog Post Submitted Successfully!',category='success')
-        return redirect( url_for('posts.post', id=post.id))
+        return redirect( url_for('post.post', id=post.id))
     return render_template(
         'add_post.html',
         form=form
@@ -90,7 +90,7 @@ def edit(id):
         # db.session.add(post)
         db.session.commit()
         flash('Post has been updated',category='success')
-        return redirect(url_for('posts.post', id=post.id))
+        return redirect(url_for('post.post', id=post.id))
     
     if current_user.id == post.poster_id:
         # if form.method is not post. bring post data from database
@@ -104,7 +104,7 @@ def edit(id):
         )
     else:
         flash("You Aren`t Authorised To Edit This Post...",category='error')
-        return redirect(url_for('posts.list'))
+        return redirect(url_for('post.list'))
 
 # delete post
 @post_view.route('/posts/delete/<int:id>')
@@ -116,12 +116,12 @@ def delete(id):
             db.session.delete(post)
             db.session.commit()
             flash('Post has been deleted',category='success')
-            return redirect(url_for('posts.list'))
+            return redirect(url_for('post.list'))
         except:
             flash('there was a problem deleting a post',category='error')
     else:
         flash("You Aren`t Authorized To Delete That Post!",category='error')
-        return redirect(url_for('posts.list'))
+        return redirect(url_for('post.list'))
 
 @post_view.route('/post/<post_id>/comments/update/<comment_id>',methods=['POST','GET'])
 def update_comment(comment_id,post_id):
@@ -136,7 +136,7 @@ def update_comment(comment_id,post_id):
         db.session.commit()
         flash('Comment has been added!',category='success')
         return redirect(url_for(
-            'posts.post',
+            'post.post',
             id=post.id))
     if current_user.id == comment.commenter.id:
         form.content.data = comment.content
@@ -160,12 +160,12 @@ def delete_comment(post_id,comment_id):
             db.session.delete(comment)
             db.session.commit()
             flash("Comment has been deleted",category='success')
-            return redirect(url_for('posts.post', id=post_id))
+            return redirect(url_for('post.post', id=post_id))
         except:
             flash('there was a problem deleting the comment',category='error')
     else:
         flash("You Aren`t Authorized To Delete That Comment!",category='error')
-        return redirect(url_for('posts.post', id=post_id))
+        return redirect(url_for('post.post', id=post_id))
 
 @post_view.route('/posts/<id>/like')#,methods=['POST'])
 @login_required
@@ -184,7 +184,7 @@ def like(id):
         like = Like(author=current_user.id,post_id=id)
         db.session.add(like)
         db.session.commit()
-    return redirect(url_for('posts.post', id=post.id))
+    return redirect(url_for('post.post', id=post.id))
     # return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.author, post.likes)})
 
 @post_view.route('/search',methods=['POST'])
@@ -195,6 +195,19 @@ def search():
         # Get data from submitted form
         post.searched = form.searched.data
         # Query the Database 
+
+        # posts_by_content = posts.filter(Posts.content.like('%' + post.searched + '%'))
+        # posts_by_title = posts.filter(Posts.title.like('%' + post.searched + '%'))
+
+        # posts_by_content = posts.order_by(Posts.title).all()
+        # posts_by_title = posts.order_by(Posts.title).all()
+        # return render_template(
+        #     "search.html",
+        #     form=form,
+        #     searched=post.searched,
+        #     posts_by_content=posts_by_content,
+        #     posts_by_title = posts_by_title
+        #     )
         posts = posts.filter(Posts.content.like('%' + post.searched + '%'))
         posts = posts.order_by(Posts.title).all()
         return render_template(

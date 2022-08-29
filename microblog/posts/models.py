@@ -1,5 +1,6 @@
 from datetime import datetime
 from microblog import db
+from flask_admin.contrib.sqla import ModelView
 
 
 class Posts(db.Model):
@@ -32,3 +33,22 @@ class Like(db.Model):
         'users.id', ondelete="CASCADE"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey(
         'posts.id', ondelete="CASCADE"), nullable=False)
+
+
+class PostView(ModelView):
+    can_create = False
+    can_delete = False
+    can_edit = True
+    # column_exclude_list = ['password_hash',]
+    # column_searchable_list = ['username','name','email']
+    # column_filters = ['role']
+    # column_editable_list = ['name']
+
+class CommentView(ModelView):
+    can_create = False
+    can_delete = True
+    can_edit = False
+    # column_exclude_list = ['password_hash',]
+    # column_searchable_list = ['username','name','email']
+    # column_filters = ['role']
+    # column_editable_list = ['name']
