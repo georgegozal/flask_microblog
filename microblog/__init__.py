@@ -56,7 +56,7 @@ admin.add_view(PostView(Posts, db.session))
 admin.add_view(CommentView(Comments, db.session))
 admin.add_view(FileAdmin(projectdir + '/static/uploads', name='Static Files'))
 
-admin.add_link(MenuLink(name="Return Home",url='/'))
+admin.add_link(MenuLink(name="Return Home",url='/posts'))
 
 
 @login_manager.user_loader
