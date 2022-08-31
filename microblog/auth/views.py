@@ -1,3 +1,4 @@
+from logging import captureWarnings
 from flask import Blueprint, render_template, request, flash ,redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -123,6 +124,8 @@ def register():
             print(e)
             user = None
             user1 = None
+        if form.password_hash.data != form.password_hash2:
+            flash('Passwords Must Match!',category='error')
         if user is None and user1 is None:
             # Gram Image Name
             try:

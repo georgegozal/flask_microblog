@@ -14,7 +14,7 @@ class UserForm(FlaskForm):
     username = StringField('Username',[DataRequired()])
     name = StringField('Name',[DataRequired()])
     email = EmailField('Email',[DataRequired()])
-    password_hash = PasswordField('Password',validators=[DataRequired(),EqualTo('password_hash2',message='Passwords Must MAtch!')])
+    password_hash = PasswordField('Password',validators=[DataRequired(),EqualTo('password_hash2',message='Passwords Must Match!')])
     password_hash2 = PasswordField('Confirm Password',validators=[DataRequired()])
     profile_pic = FileField('Profile Pic',validators=[FileAllowed(['png','jpg'])])
     # about_author = TextAreaField('About Author')
