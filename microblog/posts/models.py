@@ -1,9 +1,12 @@
+from flask import redirect,url_for
+from flask_login import current_user
 from datetime import datetime
 from microblog import db
 from flask_admin.contrib.sqla import ModelView
 
 
 class Posts(db.Model):
+    __tablename__ = 'posts'
 
     id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(255))
@@ -15,6 +18,10 @@ class Posts(db.Model):
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # Foreign Key To Link Comments #one to one
     # comment_id = db.Column(db.Integer,db.ForeignKey('comments.id')) 
+    comments = db.relationship('Comments',backref='post')
+
+    def __repr__(self):
+        return "Title:  %r" % self.title
 
 class Comments(db.Model):
     __tablename__ = 'comments'
@@ -27,6 +34,7 @@ class Comments(db.Model):
     post_id = db.Column(db.Integer,db.ForeignKey('posts.id', ondelete="CASCADE"))
 
 class Like(db.Model):
+    __tablename__ = 'like'
     id = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
     author = db.Column(db.Integer, db.ForeignKey(
@@ -36,6 +44,13 @@ class Like(db.Model):
 
 
 class PostView(ModelView):
+    # def is_accessible(self):
+    #     # return current_user.has_role('admin')
+    #     return current_user.is_admin()
+
+    # def inaccessible_callback(self, name, **kwargs):
+    #     return redirect(url_for('index'))
+
     can_create = False
     can_delete = False
     can_edit = True
@@ -45,9 +60,17 @@ class PostView(ModelView):
     # column_editable_list = ['name']
 
 class CommentView(ModelView):
+    # def is_accessible(self):
+    #     # return current_user.has_role('admin')
+    #     return current_user.is_admin()
+
+    # def inaccessible_callback(self, name, **kwargs):
+    #     return redirect(url_for('index'))
+
     can_create = False
     can_delete = True
     can_edit = False
+    column_list = ('content','date_posted','commenter','post')
     # column_exclude_list = ['password_hash',]
     # column_searchable_list = ['username','name','email']
     # column_filters = ['role']

@@ -4,8 +4,8 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{url_for('auth.logout')}}">Logout</a>
@@ -13,6 +13,11 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{url_for('auth.dashboard')}}">Dashboard</a>
                     </li>
+                    {% if current_user.role == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/admin">Admin Panel</a>
+                    </li>
+                    {% endif %}
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{url_for('auth.register')}}">Register</a>

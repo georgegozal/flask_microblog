@@ -6,7 +6,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_ckeditor import CKEditor
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
+# from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.menu import MenuLink
 import os
 
@@ -18,6 +19,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://dbuser:mypassword@localhost:5432/microblog'
 app.config['SECRET_KEY'] = "secret_key"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+projectdir = os.path.abspath(os.path.dirname(__file__))
 # app.config['CKEDITOR_FILE_UPLOADER'] = 'static/upload'
 # https://flask-ckeditor.readthedocs.io/en/latest/plugins.html
 
@@ -47,12 +49,15 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"
 
-admin = Admin(app, template_mode='bootstrap3')
+admin = Admin(app)
 # admin.add_view(ModelView(Users, db.session))
 admin.add_view(UserView(Users,db.session))
 admin.add_view(PostView(Posts, db.session))
 admin.add_view(CommentView(Comments, db.session))
+admin.add_view(FileAdmin(projectdir + '/static/uploads', name='Static Files'))
+
 admin.add_link(MenuLink(name="Return Home",url='/'))
+
 
 @login_manager.user_loader
 def load_user(id):

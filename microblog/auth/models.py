@@ -1,6 +1,6 @@
 from csv import unregister_dialect
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask import redirect,url_for
+from flask_login import UserMixin,current_user
 from datetime import datetime
 from microblog import db
 from flask_admin.contrib.sqla import ModelView
@@ -32,11 +32,11 @@ class Users(db.Model,UserMixin):
         self.username = username
         self.email = email
         self.profile_pic = profile_pic
-        self.password_hash = password_hash#generate_password_hash(password_hash,method='sha256')
+        self.password_hash = password_hash
         self.role = role
 
     def __repr__(self):
-        return "<Name %r>" % self.name
+        return "<Username %r>" % self.username
 
     def is_admin(self):
         return self.role == "admin"
@@ -49,7 +49,7 @@ class Users(db.Model,UserMixin):
 #     __tablename__ = 'user_roles'
 #     id = db.Column(db.Integer, primary_key=True)
 #     user_id = db.Column(db.Integer,db.ForeignKey('user.id',ONDELETE='CASCADE')) # თუ წაიშალა user, role დარჩება
-#     role_id = db.Column(db.Integer,db.ForeignKey('role.id',ONDELETE='CASCADE'))# ondelete=Null # თუ წაიშალა user, მონაცემის ადგილას ჩაწერეს Nullს
+#     role_id = db.Column(db.Integer,db.ForeignKey('role.id',ONDELETE='CASCADE'))# ondelete=Null # თუ წაიშალა user, user.id-ს ადგილას ჩაწერეს Nullს
 
 # class Role(db.Model):
 #     __tablename__ = 'roles'
@@ -60,10 +60,18 @@ class Users(db.Model,UserMixin):
 ##     users = db.relationship('Users', secondary="user_role", backref=db.backref("role"))
 
 class UserView(ModelView):
+
+    def is_accessible(self):
+        # return current_user.has_role('admin')
+        return current_user
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('index'))
+
     can_create = False
     can_delete = False
     can_edit = True
     column_exclude_list = ['password_hash',]
     column_searchable_list = ['username','name','email']
     column_filters = ['role']
-    column_editable_list = ['name']
+    column_editable_list = ['name','role']
