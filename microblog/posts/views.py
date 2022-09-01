@@ -187,6 +187,24 @@ def like(id):
     return redirect(url_for('post.post', id=post.id))
     # return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.author, post.likes)})
 
+@post_view.route('/post/<post_id>/comments/<id>/like')
+def like_comment(post_id,id):
+    comment = Comments.query.get_or_404(id)
+    like = Like.query.filter_by(
+    author=current_user.id, comment_id=id).first()
+
+    if not comment:
+        return jsonify({'error': 'Comment does not exist.'}, 400)
+    elif like:
+        db.session.delete(like)
+        db.session.commit()
+    else:
+        like = Like(author=current_user.id,comment_id=id)
+        db.session.add(like)
+        db.session.commit()
+    return redirect(url_for('post.post', id=post_id))
+
+
 @post_view.route('/search',methods=['POST'])
 def search():
     form = SearchForm()

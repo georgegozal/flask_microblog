@@ -32,6 +32,8 @@ class Comments(db.Model):
     # Foreign Key To Link Users 
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
     post_id = db.Column(db.Integer,db.ForeignKey('posts.id', ondelete="CASCADE"))
+    likes = db.relationship('Like',backref='comments')
+
 
 class Like(db.Model):
     __tablename__ = 'like'
@@ -40,8 +42,12 @@ class Like(db.Model):
     author = db.Column(db.Integer, db.ForeignKey(
         'users.id', ondelete="CASCADE"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey(
-        'posts.id', ondelete="CASCADE"), nullable=False)
+        'posts.id', ondelete="CASCADE")#, nullable=False
+        )
 
+    comment_id = db.Column(db.Integer,db.ForeignKey(
+        'comments.id',ondelete="CASCADE"#,nullable=False
+    ))
 
 class PostView(ModelView):
     # def is_accessible(self):
@@ -70,7 +76,7 @@ class CommentView(ModelView):
     can_create = False
     can_delete = True
     can_edit = False
-    column_list = ('content','date_posted','commenter','post')
+    column_list = ('content','date_posted','commenter','post','likes')
     # column_exclude_list = ['password_hash',]
     # column_searchable_list = ['username','name','email']
     # column_filters = ['role']

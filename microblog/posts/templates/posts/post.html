@@ -51,6 +51,10 @@
                 <p>  {{ comment.content }}</p>
             {% endif %}
         {% endif %}
+        
+        <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
+            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="15">
+        </a>{{ comment.likes|length }}  Likes 
     {% endfor %}
 
 </div>
