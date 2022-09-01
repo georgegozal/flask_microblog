@@ -8,23 +8,25 @@
             <form method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
-                {{form.username.label(class="form-label")}}
-                {{form.username(class="form-control")}}
+                {{ form.name(class="form-control",placeholder='Name') }}
                 <br>
-                {{ form.name.label(class="form-label") }}
-                {{ form.name(class="form-control") }}
+                {{ form.username(class="form-control",placeholder='Username') }}
                 <br>
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control") }}
+                {{ form.email(class="form-control",placeholder='Email') }}
                 <br>
 
                 <input type="file" name="profile_pic" class="form-control" accept=".png, .jpg, .jpeg"/>
                 <br>
-                {{ form.password_hash.label(class="form-label") }}
-                {{ form.password_hash(class="form-control") }}
+                {{ form.password_hash(class="form-control",placeholder='Password') }}
                 <br>
-                {{ form.password_hash2.label(class="form-label") }}
-                {{ form.password_hash2(class="form-control") }}
+                {{ form.password_hash2(class="form-control",placeholder='Confirm Password') }}
+                <br>
+                <br>
+
+                <div class="checkbox mb-3">
+                    <h6>Already have an account?</h6>
+                    <a class="btn btn-sm btn-secondary" href="{{ url_for('auth.login') }}">Login</a>
+                </div>
                 <br>
                 {{ form.submit(class="btn  btn-outline-success") }}
             </form>

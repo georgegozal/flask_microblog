@@ -104,12 +104,15 @@ def dashboard():
             user=current_user,
             form=form
         )
+
 # Register New User
 @auth.route('/user/add',methods=['GET','POST'])
 def register():
     form = UserForm()
     # print(request.form)
+
     if form.validate_on_submit():
+
         # print(request.form)
         email = form.email.data
         username = form.username.data
@@ -124,8 +127,6 @@ def register():
             print(e)
             user = None
             user1 = None
-        if form.password_hash.data != form.password_hash2:
-            flash('Passwords Must Match!',category='error')
         if user is None and user1 is None:
             # Gram Image Name
             try:
@@ -143,7 +144,7 @@ def register():
             user = Users(
                 username = username,
                 name = form.name.data,
-                email = form.email.data,
+                email = email,
                 profile_pic = pic_name,
                 password_hash = generate_password_hash(form.password_hash.data, 'sha256')
                 )
@@ -152,15 +153,14 @@ def register():
                 db.session.add(user)
                 db.session.commit()
                 flash("User Added Successfully!")
+                login_user(user)
                 return redirect(url_for('auth.dashboard'))
             except:
                 flash('Error',category='error')
-    try:
-        # our_users = Users.query.all()#.order_by(Users.date_added)#.all()
-        our_users = Users.query.order_by(Users.id.desc()).all()
-    except:
-        our_users = ''
+    if form.errors != {}: #If there are not errors from the validations
+        for err_msg in form.errors.values():
+            flash(f'There was an error with creating a user: {err_msg}', category='error')
+
     return render_template(
             'add_user.html',
-            form=form,
-            our_users=our_users)
+            form=form)
