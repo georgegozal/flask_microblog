@@ -2,7 +2,7 @@ from csv import unregister_dialect
 from flask import redirect,url_for
 from flask_login import UserMixin,current_user
 from datetime import datetime
-from microblog import db
+from microblog.config import db
 from flask_admin.contrib.sqla import ModelView
 
 class Users(db.Model,UserMixin):
@@ -27,11 +27,10 @@ class Users(db.Model,UserMixin):
     #roles = db.relationship('Role',secondary='user_roles',backref=db.backref('users',lazy='dynamic'))
     role = db.Column(db.String(100),default='user')
 
-    def __init__(self,name,username,email,password_hash,profile_pic,role='user'):
+    def __init__(self,name,username,email,password_hash,role='user'):
         self.name = name
         self.username = username
         self.email = email
-        self.profile_pic = profile_pic
         self.password_hash = password_hash
         self.role = role
 

@@ -7,9 +7,9 @@ from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.menu import MenuLink
+from microblog.commands.commands import create_test_user
+from microblog.config import db
 import os
-
-
 
 
 app = Flask(__name__)
@@ -21,8 +21,7 @@ projectdir = os.path.abspath(os.path.dirname(__file__))
 # app.config['CKEDITOR_FILE_UPLOADER'] = 'static/upload'
 # https://flask-ckeditor.readthedocs.io/en/latest/plugins.html
 
-db = SQLAlchemy(app)
-# db.init_app(app)
+db.init_app(app)
 migrate = Migrate(app,db)
 
 # Add CKEditor
@@ -39,9 +38,9 @@ from microblog.auth.models import Users, UserView
 from microblog.posts.models import Posts,Like,Comments,PostView,CommentView
 
 
-if not os.path.exists('users.db'):
-    db.create_all(app=app)
-    print('Created Database!')
+# if not os.path.exists('users.db'):
+#     db.create_all(app=app)
+#     print('Created Database!')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -55,6 +54,9 @@ admin.add_view(CommentView(Comments, db.session))
 admin.add_view(FileAdmin(projectdir + '/static/uploads', name='Static Files'))
 
 admin.add_link(MenuLink(name="Return Home",url='/posts'))
+
+#add cli commands
+app.cli.add_command(create_test_user)
 
 
 @login_manager.user_loader
