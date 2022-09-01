@@ -50,34 +50,25 @@ class Like(db.Model):
     ))
 
 class PostView(ModelView):
-    # def is_accessible(self):
-    #     # return current_user.has_role('admin')
-    #     return current_user.is_admin()
+    def is_accessible(self):
+        return current_user.is_admin()
 
-    # def inaccessible_callback(self, name, **kwargs):
-    #     return redirect(url_for('index'))
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('post.list'))
 
     can_create = False
     can_delete = False
     can_edit = True
-    # column_exclude_list = ['password_hash',]
-    # column_searchable_list = ['username','name','email']
-    # column_filters = ['role']
-    # column_editable_list = ['name']
+
 
 class CommentView(ModelView):
-    # def is_accessible(self):
-    #     # return current_user.has_role('admin')
-    #     return current_user.is_admin()
+    def is_accessible(self):
+        return current_user.is_admin()
 
-    # def inaccessible_callback(self, name, **kwargs):
-    #     return redirect(url_for('index'))
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('post.list'))
 
     can_create = False
     can_delete = True
     can_edit = False
     column_list = ('content','date_posted','commenter','post','likes')
-    # column_exclude_list = ['password_hash',]
-    # column_searchable_list = ['username','name','email']
-    # column_filters = ['role']
-    # column_editable_list = ['name']

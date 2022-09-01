@@ -63,10 +63,11 @@ class UserView(ModelView):
 
     def is_accessible(self):
         # return current_user.has_role('admin')
-        return current_user
+        return current_user.is_admin() # if it returs false, user cant see this view
 
+    # if user tries anyway with link, it`ll  redirected to post.list
     def inaccessible_callback(self, name, **kwargs):
-        return redirect(url_for('index'))
+        return redirect(url_for('post.list'))
 
     can_create = False
     can_delete = False

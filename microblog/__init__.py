@@ -1,5 +1,3 @@
-from tempfile import tempdir
-from venv import create
 from flask import Flask, flash,render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
