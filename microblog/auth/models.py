@@ -1,11 +1,11 @@
-from csv import unregister_dialect
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import redirect,url_for
 from flask_login import UserMixin,current_user
 from datetime import datetime
 from microblog.config import db
 from flask_admin.contrib.sqla import ModelView
 
-class Users(db.Model,UserMixin):
+class User(db.Model,UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -24,15 +24,14 @@ class Users(db.Model,UserMixin):
     # User Can have 
     # likes = db.Column(db.Integer,db.ForeignKey('like.id'))
     # many two many
-    #roles = db.relationship('Role',secondary='user_roles',backref=db.backref('users',lazy='dynamic'))
+    #roles = db.relationship('Role',secondary='user_roles',backref=db.backref('user',lazy='dynamic'))
     role = db.Column(db.String(100),default='user')
 
-    def __init__(self,name,username,email,password_hash,role='user'):
-        self.name = name
-        self.username = username
-        self.email = email
-        self.password_hash = password_hash
-        self.role = role
+    # def __init__(self,name,username,email,role='user'):
+    #     self.name = name
+    #     self.username = username
+    #     self.email = email
+    #     self.role = role
 
     def __repr__(self):
         return "<Username %r>" % self.username
@@ -40,8 +39,14 @@ class Users(db.Model,UserMixin):
     def is_admin(self):
         return self.role == "admin"
 
-# class AdminUser(Users):
-#     # __tablename__ = 'users' # if do not use this it`ll be created new table
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password,'sha256')
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+# class AdminUser(User):
+#     # __tablename__ = 'user' # if do not use this it`ll be created new table
 #     role = db.Column(db.String(100),default='admin')
 
 # class UserRoles(db.Model):
@@ -56,7 +61,7 @@ class Users(db.Model,UserMixin):
 #     name = db.Column(db.String(50),unique=True)
 
 ##     is_admin = db.Column(db.Boolean,default=False)
-##     users = db.relationship('Users', secondary="user_role", backref=db.backref("role"))
+##     user = db.relationship('User', secondary="user_role", backref=db.backref("role"))
 
 class UserView(ModelView):
 

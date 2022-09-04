@@ -8,18 +8,12 @@ from flask_admin import Admin
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.menu import MenuLink
 from microblog.commands.commands import create_test_user
-from microblog.config import db
+from microblog.config import Config,db,basedir
 import os
 
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://dbuser:mypassword@localhost:5432/microblog'
-app.config['SECRET_KEY'] = "secret_key"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-projectdir = os.path.abspath(os.path.dirname(__file__))
-# app.config['CKEDITOR_FILE_UPLOADER'] = 'static/upload'
-# https://flask-ckeditor.readthedocs.io/en/latest/plugins.html
+app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app,db)
@@ -34,11 +28,11 @@ app.register_blueprint(post_view, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
 
 
-from microblog.auth.models import Users, UserView
+from microblog.auth.models import User, UserView
 from microblog.posts.models import Posts,Like,Comments,PostView,CommentView
 
 
-# if not os.path.exists('users.db'):
+# if not os.path.exists('user.db'):
 #     db.create_all(app=app)
 #     print('Created Database!')
 
@@ -47,11 +41,12 @@ login_manager.init_app(app)
 login_manager.login_view = "auth.login"
 
 admin = Admin(app)
-# admin.add_view(ModelView(Users, db.session))
-admin.add_view(UserView(Users,db.session))
+# admin.add_view(ModelView(User, db.session))
+admin.add_view(UserView(User,db.session))
 admin.add_view(PostView(Posts, db.session))
 admin.add_view(CommentView(Comments, db.session))
-admin.add_view(FileAdmin(projectdir + '/static/uploads', name='Static Files'))
+admin.add_view(FileAdmin(basedir + '/static/uploads', name='Static Files'))
+#https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_fileadmin/
 
 admin.add_link(MenuLink(name="Return Home",url='/posts'))
 
@@ -61,4 +56,4 @@ app.cli.add_command(create_test_user)
 
 @login_manager.user_loader
 def load_user(id):
-    return Users.query.get(int(id))
+    return User.query.get(int(id))

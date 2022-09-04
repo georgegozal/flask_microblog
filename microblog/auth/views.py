@@ -1,11 +1,9 @@
-from logging import captureWarnings
 from flask import Blueprint, render_template, request, flash ,redirect, url_for
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from .forms import LoginForm,UserForm
 import uuid as uuid
-from .models import Users
+from .models import User
 from microblog import db
 
 
@@ -18,7 +16,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = Users.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data).first()
 
         print(user)
         # print(check_password_hash(user.password_hash, form.password.data))
@@ -26,8 +24,8 @@ def login():
         print(form.password.data)
         if user:
             # Check the hash
-            if check_password_hash(user.password_hash, form.password.data):
-                login_user(user)
+            if user.check_password(form.password.data):
+                login_user(user, remember=form.remember_me.data)
                 flash("Login Successfully",category="success")
                 return redirect(url_for('auth.dashboard'))
             else:
@@ -53,7 +51,7 @@ def logout():
 def dashboard():
     form = UserForm()
     id = current_user.id
-    user = Users.query.get_or_404(id)
+    user = User.query.get_or_404(id)
     if request.method == 'POST':
         # print(request.form)
         # print(form.profile_pic.data)
@@ -113,14 +111,14 @@ def register():
 
     if form.validate_on_submit():
 
-        # print(request.form)
+        print(request.form)
         email = form.email.data
         username = form.username.data
         try:
-            user = Users.query.filter_by(username=username).first()
+            user = User.query.filter_by(username=username).first()
             if user:
                 flash('Username Already is used',category='error')
-            user1 = Users.query.filter_by(email=email).first()
+            user1 = User.query.filter_by(email=email).first()
             if user1:
                 flash('Email Already is used',category='error')
         except Exception as e:
@@ -141,13 +139,13 @@ def register():
                 pic_name = None
                 print(e)
 
-            user = Users(
+            user = User(
                 username = username,
                 name = form.name.data,
                 email = email,
-                profile_pic = pic_name,
-                password_hash = generate_password_hash(form.password_hash.data, 'sha256')
+                profile_pic = pic_name
                 )
+            user.set_password(form.password_hash.data)
             # user.password(form.password_hash.data)
             try:
                 db.session.add(user)
