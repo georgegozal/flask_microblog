@@ -69,13 +69,10 @@
 {{ current_user.about_author }}
             </textarea>
             <br>
-            {#{ form.profile_pic.label(class='form-label') }#}
-            {#{ form.profile_pic(class="form-control", value=current_user.profile_pic)}#}
             <input type="file" name="profile_pic" class="form-control" accept=".png, .jpg, .jpeg"/>
-
             <br>
             
-            {{ form.submit(class="btn  btn-outline-success btn-sm") }}
+            {{ form.submit(class="btn  btn-outline-success btn-sm",value='Update') }}
         </form>
     </div>
 </div>

@@ -28,7 +28,8 @@ class UserForm(FlaskForm):
     email = EmailField('Email',[Email(),DataRequired()])
     password_hash = PasswordField('Password',validators=[Length(min=6),DataRequired()])
     password_hash2 = PasswordField('Confirm Password',validators=[EqualTo('password_hash',message='Passwords Must Match!'),DataRequired()])
-    # profile_pic = FileField('Profile Pic',validators=[FileAllowed(['png','jpg'])])
+    profile_pic = FileField('Profile Pic',validators=[FileAllowed(['png','jpg','jpeg'])])
+
     # about_author = TextAreaField('About Author')
     submit = SubmitField('Create Account')
 
