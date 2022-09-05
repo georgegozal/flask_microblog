@@ -4,6 +4,7 @@ from flask_login import UserMixin,current_user
 from datetime import datetime
 from app.config import db
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.fileadmin import FileAdmin
 
 class User(db.Model,UserMixin):
     __tablename__ = 'users'
@@ -80,3 +81,12 @@ class UserView(ModelView):
     column_searchable_list = ['username','name','email']
     column_filters = ['role']
     column_editable_list = ['name','role']
+
+class FileView(FileAdmin):
+    def is_accessible(self):
+        # return current_user.has_role('admin')
+        return current_user.is_admin() # if it returs false, user cant see this view
+
+    # if user tries anyway with link, it`ll  redirected to post.list
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('post.list'))

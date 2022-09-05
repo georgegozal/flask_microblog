@@ -5,7 +5,7 @@ from flask_login import LoginManager
 from flask_ckeditor import CKEditor
 from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
-from flask_admin.contrib.fileadmin import FileAdmin
+
 from flask_admin.menu import MenuLink
 from app.commands.commands import create_test_user
 from app.config import Config,db,basedir
@@ -28,7 +28,7 @@ app.register_blueprint(post_view, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
 
 
-from app.auth.models import User, UserView
+from app.auth.models import User, UserView,FileView
 from app.posts.models import Posts,Like,Comments,PostView,CommentView
 
 
@@ -45,7 +45,7 @@ admin = Admin(app)
 admin.add_view(UserView(User,db.session))
 admin.add_view(PostView(Posts, db.session))
 admin.add_view(CommentView(Comments, db.session))
-admin.add_view(FileAdmin(basedir + '/static/uploads', name='Static Files'))
+admin.add_view(FileView(basedir + '/static/uploads', name='Static Files'))
 #https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_fileadmin/
 
 admin.add_link(MenuLink(name="Return Home",url='/posts'))
