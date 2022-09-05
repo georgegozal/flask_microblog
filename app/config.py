@@ -19,8 +19,8 @@ def return_db(env='DEV'):
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'asd;lkajs-90 as;doaksdasd02 ;;/A'
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'users.db')
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://dbuser:mypassword@localhost:5432/microblog'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'users.db')
+    # SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://dbuser:mypassword@localhost:5432/microblog'
     # CKEDITOR_FILE_UPLOADER = 'static/upload'
     # https://flask-ckeditor.readthedocs.io/en/latest/plugins.html
     SQLALCHEMY_TRACK_MODIFICATIONS = False

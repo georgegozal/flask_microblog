@@ -1,7 +1,7 @@
 from flask import render_template
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
-from microblog import app
-from microblog.posts.forms import SearchForm
+from app import app
+from app.posts.forms import SearchForm
 
 # Invalid URL
 @app.errorhandler(404)

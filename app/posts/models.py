@@ -1,7 +1,7 @@
 from flask import redirect,url_for
 from flask_login import current_user
 from datetime import datetime
-from microblog import db
+from app import db
 from flask_admin.contrib.sqla import ModelView
 
 
@@ -12,13 +12,14 @@ class Posts(db.Model):
     title = db.Column(db.String(255))
     content = db.Column(db.Text)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    slug = db.Column(db.String(255))# slag`ll be like a custom url
+    # slug = db.Column(db.String(255))# slag`ll be like a custom url
 
     # Foreign Key To Link Users # many 2 one
     poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # Foreign Key To Link Comments #one to one
     # comment_id = db.Column(db.Integer,db.ForeignKey('comments.id')) 
     comments = db.relationship('Comments',backref='post')
+    likes = db.relationship('Like',backref='post')
 
     def __repr__(self):
         return "Title:  %r" % self.title
@@ -49,6 +50,9 @@ class Like(db.Model):
         'comments.id',ondelete="CASCADE"#,nullable=False
     ))
 
+    def __repr__(self):
+        return f'{self.user.username}'
+
 class PostView(ModelView):
     def is_accessible(self):
         return current_user.is_admin()
@@ -59,6 +63,7 @@ class PostView(ModelView):
     can_create = False
     can_delete = False
     can_edit = True
+    column_list = ('id','title','date_posted','content','poster','likes')
 
 
 class CommentView(ModelView):

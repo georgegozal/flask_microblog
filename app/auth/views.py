@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from .forms import LoginForm,UserForm
 import uuid as uuid
 from .models import User
-from microblog import db
+from app import db
 
 
 
@@ -77,7 +77,7 @@ def dashboard():
                 pic_name = str(uuid.uuid1()) + "_" + pic_filename
 
                 # Save That Image
-                form.profile_pic.data.save(f'microblog/static/uploads/{pic_name}')
+                form.profile_pic.data.save(f'app/static/uploads/{pic_name}')
                 # user.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER']))
                 # save pic name in user model
                 user.profile_pic = pic_name
@@ -134,7 +134,7 @@ def register():
                 # we need this incase two user uploaded pic with same name
                 pic_name = str(uuid.uuid1()) + "_" + pic_filename
                 # Save That Image
-                form.profile_pic.data.save(f'microblog/static/uploads/{pic_name}')
+                form.profile_pic.data.save(f'app/static/uploads/{pic_name}')
             except Exception as e:
                 pic_name = None
                 print(e)

@@ -1,5 +1,5 @@
-from microblog import app
-from microblog.config import db
+from app import app
+from app.config import db
 
 with app.app_context(): 
     db.create_all()

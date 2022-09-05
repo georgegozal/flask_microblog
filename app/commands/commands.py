@@ -1,16 +1,16 @@
 import click
 from flask.cli import with_appcontext
-from microblog.config import db
-from microblog.auth.models import User
+from app.config import db
+from app.auth.models import User
 from werkzeug.security import generate_password_hash
 
 @click.command('make_admin')
 @with_appcontext
 def create_test_user():
     admin_user = User(
-        username='Admin',
-        name='name',
-        email='asldkjads@gmail.com',
+        username='admin',
+        name='Admin',
+        email='admin@gmail.com',
         password_hash=generate_password_hash('admin', 'sha256'),
         role='admin'
         )

@@ -7,8 +7,8 @@ from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.menu import MenuLink
-from microblog.commands.commands import create_test_user
-from microblog.config import Config,db,basedir
+from app.commands.commands import create_test_user
+from app.config import Config,db,basedir
 import os
 
 
@@ -21,15 +21,15 @@ migrate = Migrate(app,db)
 # Add CKEditor
 ckeditor = CKEditor(app)
 
-from microblog import views
-from microblog.posts.views import post_view
-from microblog.auth.views import auth
+from app import views
+from app.posts.views import post_view
+from app.auth.views import auth
 app.register_blueprint(post_view, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
 
 
-from microblog.auth.models import User, UserView
-from microblog.posts.models import Posts,Like,Comments,PostView,CommentView
+from app.auth.models import User, UserView
+from app.posts.models import Posts,Like,Comments,PostView,CommentView
 
 
 # if not os.path.exists('user.db'):

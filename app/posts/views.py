@@ -4,7 +4,7 @@ from flask_login import login_user, LoginManager, login_required, logout_user, c
 from werkzeug.utils import secure_filename
 from .models import Posts,Comments, Like
 from .forms import PostForm,SearchForm,CommentForm
-from microblog import db
+from app import db
 
 post_view = Blueprint('post',__name__,template_folder="templates/posts")
 
@@ -58,13 +58,13 @@ def add():
         post = Posts(
             title = form.title.data,
             content = form.content.data,
-            slug = form.slug.data,
+            # slug = form.slug.data,
             poster_id = current_user.id
         )
         # Clear the Form
         form.title.data = ''
         form.content.data = ''
-        form.slug.data = ''
+        # form.slug.data = ''
 
         # Add post data to database
         db.session.add(post)
@@ -85,7 +85,7 @@ def edit(id):
     form = PostForm()
     if form.validate_on_submit():
         post.title = form.title.data
-        post.slug = form.slug.data
+        # post.slug = form.slug.data
         post.content = form.content.data
         # db.session.add(post)
         db.session.commit()
@@ -95,7 +95,7 @@ def edit(id):
     if current_user.id == post.poster_id:
         # if form.method is not post. bring post data from database
         form.title.data = post.title
-        form.slug.data = post.slug
+        # form.slug.data = post.slug
         form.content.data = post.content
         return render_template(
             'edit.html',

@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import redirect,url_for
 from flask_login import UserMixin,current_user
 from datetime import datetime
-from microblog.config import db
+from app.config import db
 from flask_admin.contrib.sqla import ModelView
 
 class User(db.Model,UserMixin):
@@ -22,7 +22,7 @@ class User(db.Model,UserMixin):
     # User Can Have Many Comments # One to Many
     comments = db.relationship('Comments',backref='commenter')
     # User Can have 
-    # likes = db.Column(db.Integer,db.ForeignKey('like.id'))
+    likes = db.relationship('Like',backref='user')
     # many two many
     #roles = db.relationship('Role',secondary='user_roles',backref=db.backref('user',lazy='dynamic'))
     role = db.Column(db.String(100),default='user')
