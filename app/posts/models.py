@@ -55,7 +55,11 @@ class Like(db.Model):
 
 class PostView(ModelView):
     def is_accessible(self):
-        return current_user.is_admin()
+        try:
+            is_admin = current_user.is_admin()
+        except AttributeError as a:
+            is_admin = False
+        return is_admin
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('post.list'))
@@ -68,7 +72,11 @@ class PostView(ModelView):
 
 class CommentView(ModelView):
     def is_accessible(self):
-        return current_user.is_admin()
+        try:
+            is_admin = current_user.is_admin()
+        except AttributeError as a:
+            is_admin = False
+        return is_admin 
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('post.list'))

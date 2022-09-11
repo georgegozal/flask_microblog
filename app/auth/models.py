@@ -67,8 +67,11 @@ class User(db.Model,UserMixin):
 class UserView(ModelView):
 
     def is_accessible(self):
-        # return current_user.has_role('admin')
-        return current_user.is_admin() # if it returs false, user cant see this view
+        try:
+            is_admin = current_user.is_admin()
+        except AttributeError as a:
+            is_admin = False
+        return is_admin 
 
     # if user tries anyway with link, it`ll  redirected to post.list
     def inaccessible_callback(self, name, **kwargs):
@@ -84,8 +87,11 @@ class UserView(ModelView):
 
 class FileView(FileAdmin):
     def is_accessible(self):
-        # return current_user.has_role('admin')
-        return current_user.is_admin() # if it returs false, user cant see this view
+        try:
+            is_admin = current_user.is_admin()
+        except AttributeError as a:
+            is_admin = False
+        return is_admin # if it returs false, user cant see this view
 
     # if user tries anyway with link, it`ll  redirected to post.list
     def inaccessible_callback(self, name, **kwargs):

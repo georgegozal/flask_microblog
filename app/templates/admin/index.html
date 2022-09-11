@@ -1,21 +1,12 @@
 {% extends 'admin/master.html' %}
 {% block body %}
-    {% if current_user.is_authenticated %}
-        {% if current_user.role == 'admin' %}
-            Welcome to admin page {{current_user.name}}
-        {% else %}
-        </Br>
-        <center>
-            <h1>404 Error</h1>
-            <p>Page Not Found - Try Again...</p>
-        </center>
-        {% endif %}
-    {% else %}
-        </Br>
+    {% if current_user.is_anonymous %}
         <center>
             <h1>404 Error</h1>
             <p>Page Not Found - Try Again...</p>
         </center>
     {% endif %}
+
+
 
 {% endblock %}
