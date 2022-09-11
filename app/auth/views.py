@@ -53,15 +53,10 @@ def dashboard():
     id = current_user.id
     user = User.query.get_or_404(id)
     if request.method == 'POST':
-        # print(request.form)
-        # print(form.profile_pic.data)
         user.name = request.form['name']
         user.email = request.form['email']
         user.username = request.form['username']
         user.about_author = request.form['about_author']
-        # get uploaded file/image
-        #user.profile_pic = request.files['profile_pic'] 
-        # Gram Image Name
         if form.profile_pic.data:
             try:
                 pic_filename = secure_filename(form.profile_pic.data.filename)
@@ -152,13 +147,51 @@ def register():
                 db.session.commit()
                 flash("User Added Successfully!")
                 login_user(user)
+                #send_email_after_register(email) # sent email 
                 return redirect(url_for('auth.dashboard'))
             except:
                 flash('Error',category='error')
     if form.errors != {}: #If there are not errors from the validations
-        for err_msg in form.errors.values():
-            flash(f'There was an error with creating a user: {err_msg}', category='error')
+        for err_message in form.errors.values():
+            flash(f'There was an error with creating a user: {err_message}', category='error')
 
     return render_template(
             'add_user.html',
             form=form)
+
+def send_email_after_register(email_to):
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    import datetime
+    now = datetime.datetime.now()
+
+    SERVER = 'smtp.gmail.com' # "your smtp server"
+    PORT = 587 # your port number
+    FROM =  'microblog@gmail.com' # "your from email id"
+    TO = email_to # "your to email ids"  # can be a list
+    PASS = '***********' # "your email id's password"
+
+    message = MIMEMultipart()
+    message['Subject'] = 'Registration Success Message - [Automated Email]' + ' ' + str(now.day) + '-' + str(now.month) + '-' + str(
+    now.year)
+
+    message['From'] = FROM
+    message['To'] = TO
+
+    text = 'Your registration to our blog has been successed, Welcome!'
+    message.attach(MIMEText(text))
+    print('Initiating Server...')
+
+    server = smtplib.SMTP(SERVER, PORT)
+    #server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server.set_debuglevel(1)
+    server.ehlo()
+    server.starttls()
+    #server.ehlo
+    server.login(FROM, PASS)
+    server.sendmail(FROM, TO, message.as_string())
+
+    print('Email Sent...')
+
+    server.quit()
