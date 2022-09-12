@@ -20,3 +20,15 @@ def create_test_user():
         click.echo('Admin has been added!')
     except Exception as e:
         click.echo(e)
+
+def init_db():
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
+
+
+@click.command('init_db')
+@with_appcontext
+def init_db_command():
+    init_db()
+    click.echo("Created database")
