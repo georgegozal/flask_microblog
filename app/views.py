@@ -1,26 +1,19 @@
-from flask import render_template
+from flask import render_template,Blueprint
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
-from app import app
-from app.posts.forms import SearchForm
 
-# Invalid URL
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+# app_view = Blueprint('app_view',__name__,template_folder="templates")
 
-# Internal Server Error
-@app.errorhandler(500)
-def page_not_found(e):
-    return render_template('500.html'), 500
+# # Invalid URL
+# @app_view.errorhandler(404)
+# def page_not_found(e):
+#     return render_template('404.html'), 404
 
-@app.route('/')
-def index():
-    return render_template(
-        'home.html'
-    )
+# # Internal Server Error
+# @app_view.errorhandler(500)
+# def page_not_found(e):
+#     return render_template('500.html'), 500
 
-
-@app.context_processor
-def base():
-    form = SearchForm()
-    return dict(form=form)
+# # @app_view.context_processor
+# # def base():
+# #     searchform = SearchForm()
+# #     return dict(searchform=searchform)

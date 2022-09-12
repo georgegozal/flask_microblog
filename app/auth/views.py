@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from .forms import LoginForm,UserForm
 import uuid as uuid
 from .models import User
-from app import db
+from app.extensions import db
 
 
 

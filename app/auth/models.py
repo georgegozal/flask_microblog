@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import redirect,url_for
 from flask_login import UserMixin,current_user
 from datetime import datetime
-from app.config import db
+from app.extensions import db
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 

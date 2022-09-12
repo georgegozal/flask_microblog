@@ -1,10 +1,8 @@
-from crypt import methods
-from flask import Flask, flash,url_for, redirect,render_template,Blueprint, request,jsonify
-from flask_login import login_user, LoginManager, login_required, logout_user, current_user
-from werkzeug.utils import secure_filename
+from flask import flash,url_for, redirect,render_template,Blueprint, request,jsonify
+from flask_login import login_user, login_required, current_user
 from .models import Posts,Comments, Like
 from .forms import PostForm,SearchForm,CommentForm
-from app import db
+from app.extensions import db
 
 post_view = Blueprint('post',__name__,template_folder="templates/posts")
 

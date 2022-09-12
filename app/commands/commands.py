@@ -1,6 +1,6 @@
 import click
 from flask.cli import with_appcontext
-from app.config import db
+from app.extensions import db
 from app.auth.models import User
 from werkzeug.security import generate_password_hash
 

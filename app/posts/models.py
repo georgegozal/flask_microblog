@@ -1,7 +1,7 @@
 from flask import redirect,url_for
 from flask_login import current_user
 from datetime import datetime
-from app import db
+from app.extensions import db
 from flask_admin.contrib.sqla import ModelView
 
 
