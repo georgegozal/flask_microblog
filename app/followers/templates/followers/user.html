@@ -1,31 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<br>
+<div class="card">
+    <div class="card-header">
+        user profile
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-8">
+                        <strong>Name: </strong>{{ user.name }}<br>
+                        <strong>About Author: </strong>{{ user.about_author}}<br>
+                        <br>
+                        {% if user.about_author %}
+                            <p>{{ user.about_author }}</p>
+                        {% endif %}
+                        
+                        <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+                        
+                        {% if user == current_user %}
+                            <p><a href="{{ url_for('auth.dashboard') }}">Edit your profile</a></p>
+                        {% elif current_user.is_following(user) %}
+                        <p>
+                            <form action="{{ url_for('followers.unfollow', username=user.username) }}" method="post">
+                                {{ form.hidden_tag() }}
+                                {{ form.submit(value='Unfollow') }}
+                            </form>
+                        </p>
+                        
+                        {% else %}
+                        <p>
+                            <form action="{{ url_for('followers.follow', username=user.username) }}" method="post">
+                                {{ form.hidden_tag() }}
+                                {{ form.submit(value='Follow') }}
+                            </form>
+                        </p>
+                        {% endif %}
 
-<h1>User: {{ user.username }}</h1>
+                    </div>
+                    <div class="col-4">
+                        {% if user.profile_pic %}
+                            <img src="{{ url_for('static', filename='uploads/' + user.profile_pic)}}" alt="default_profile_pic" height="150" align="right">
+                        {% else %}
+                            <img src="{{url_for('static',filename='uploads/default-profile-picture.jpeg')}}" alt="default_profile_pic" height="150" align="right">
+                        {% endif %}
+                    </div>
 
-{% if user.about_author %}
-    <p>{{ user.about_author }}</p>
-{% endif %}
+                </div>
+            </div>
+        </p>
+        {#<a href="{{url_for('view.update1',id=user.id)}}" class="btn  btn-secondary btn-sm">Update Profile</a>
 
-<p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
-
-{% if user == current_user %}
-    <p><a href="{{ url_for('auth.dashboard') }}">Edit your profile</a></p>
-{% elif current_user.is_following(user) %}
-<p>
-    <form action="{{ url_for('followers.unfollow', username=user.username) }}" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.submit(value='Unfollow') }}
-    </form>
-</p>
-
-{% else %}
-<p>
-    <form action="{{ url_for('followers.follow', username=user.username) }}" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.submit(value='Follow') }}
-    </form>
-</p>
-{% endif %}
+    #}
+    </div>
+</div>
 {% endblock %}
