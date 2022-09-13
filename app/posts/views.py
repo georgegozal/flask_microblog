@@ -24,6 +24,8 @@ def post(id):
     post = Posts.query.get_or_404(id)
     comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
     like = Like.query.filter_by(post_id=post.id).all()
+    can_like = Like.query.filter_by(author=current_user.id,post_id=post.id).count() > 0
+
 
     if form.validate_on_submit():
         content = form.content.data
@@ -44,7 +46,8 @@ def post(id):
         post = post,
         comments=comments,
         form=form,
-        like=like
+        like=like,
+        can_like=can_like
     )
 
 # Add Post Page

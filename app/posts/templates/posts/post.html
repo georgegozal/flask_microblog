@@ -8,16 +8,21 @@
 <div class="shadow p-3 mb-5 bg-body rounded">
     <h2>{{ post.title }}</h2>
     <small>
-        {# აქ უნდა დავამატო ლინკი, ავტორის გვერდზე რომელიც გადაგვიყვანს #}
         By: <a href="{{ url_for('followers.user', username=post.poster.username) }}" >{{ post.poster.name }}</a> <br>
         Date Posted: {{ post.date_posted }} <br><br>
     </small>
 
     {{ post.content|safe }} 
     <br>
-    <a href="{{ url_for('post.like', id=post.id)}}">
-        <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="18">
-    </a>{{ like|length }}  Likes 
+    {% if can_like == True %}
+        <a href="{{ url_for('post.like', id=post.id)}}">
+            <img src="{{url_for('static',filename='uploads/liked.png')}}" alt="liked" title="Unike Post" height="25">
+        </a>{{ like|length }}  Likes 
+    {% else %}
+        <a href="{{ url_for('post.like', id=post.id)}}">
+            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">
+        </a>{{ like|length }}  Likes 
+    {% endif %}
 
     <br>
     <br><br>
@@ -51,10 +56,17 @@
                 <p>  {{ comment.content }}</p>
             {% endif %}
         {% endif %}
-        
+
+        {# TODO: needs work #}
+        {% if can_like == True %}
         <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
-            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="15">
+            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
         </a>{{ comment.likes|length }}  Likes 
+        {% else %}
+        <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
+            <img src="{{url_for('static',filename='uploads/liked.png')}}" alt="liked" title="Like Comment" height="20">
+        </a>{{ comment.likes|length }}  Likes 
+        {% endif %}
     {% endfor %}
 
 </div>
