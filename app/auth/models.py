@@ -5,6 +5,7 @@ from datetime import datetime
 from app.extensions import db
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
+from app.posts.models import Posts
 
 class User(db.Model,UserMixin):
     __tablename__ = 'users'
@@ -28,11 +29,41 @@ class User(db.Model,UserMixin):
     #roles = db.relationship('Role',secondary='user_roles',backref=db.backref('user',lazy='dynamic'))
     role = db.Column(db.String(100),default='user')
 
-    # def __init__(self,name,username,email,role='user'):
-    #     self.name = name
-    #     self.username = username
-    #     self.email = email
-    #     self.role = role
+    followers = db.Table('followers',
+        db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
+        db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
+    )
+
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
+    #get posts from followed users, and own posts
+    def followed_posts(self):
+        followed = Posts.query.join(
+            self.followers, (self.followers.c.followed_id == Posts.poster_id)).filter(
+                self.followers.c.follower_id == self.id)
+        own = Posts.query.filter_by(poster_id=self.id)
+        return followed.union(own).order_by(Posts.timestamp.desc())
+
+
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        try:
+            is_following = self.followed.filter_by(username=user.username).count() > 0
+            # is_following = self.followers.first().followed.filter_by(username=user.username).count() > 0
+        except AttributeError:
+            is_following = False
+        return is_following
 
     def __repr__(self):
         return "<Username %r>" % self.username

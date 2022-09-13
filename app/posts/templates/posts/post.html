@@ -9,7 +9,7 @@
     <h2>{{ post.title }}</h2>
     <small>
         {# აქ უნდა დავამატო ლინკი, ავტორის გვერდზე რომელიც გადაგვიყვანს #}
-        By: {{ post.poster.name }} <br>
+        By: <a href="{{ url_for('followers.user', username=post.poster.username) }}" >{{ post.poster.name }}</a> <br>
         Date Posted: {{ post.date_posted }} <br><br>
     </small>
 

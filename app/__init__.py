@@ -2,21 +2,22 @@ from flask import Flask,render_template
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from app.config import Config,PROJECT_ROOT
-from app.auth.models import User, UserView,FileView
+from app.auth.models import UserView,FileView,User
+# from app.followers.models import UserFollowers
 from app.posts.models import Posts,Like,Comments,PostView,CommentView
-from app.commands.commands import create_test_user #, init_db_command, populate_movies_command
+from app.commands.commands import create_test_user, init_db_command
 from app.extensions import db, migrate, login_manager,ckeditor
 # from app.api import api
 from app import views
 from app.posts.views import post_view
 from app.auth.views import auth
+from app.followers.views import followers
 # from app.views import app_view
 from app.posts.forms import SearchForm
 
 
-BLUEPRINTS = [post_view, auth]
-COMMANDS = [create_test_user]#init_db_command, populate_movies_command]
-
+BLUEPRINTS = [post_view, auth,followers]
+COMMANDS = [create_test_user,init_db_command]
 
 def create_app():
 

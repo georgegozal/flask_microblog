@@ -8,7 +8,7 @@
 <div class="shadow p-3 mb-5 bg-body rounded">
     <a href="{{ url_for('post.post', id=post.id ) }}"><h2>{{ post.title }}</h2></a>
     <small>
-        By: {{ post.poster.name }} <br>
+        By: <a href="{{ url_for('followers.user', username=post.poster.username) }}" >{{ post.poster.name }}</a> <br>
         Date Posted: {{ post.date_posted }} <br><br>
     </small>
     {{ post.content|safe }} <br>

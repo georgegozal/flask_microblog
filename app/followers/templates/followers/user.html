@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>User: {{ user.username }}</h1>
+
+{% if user.about_author %}
+    <p>{{ user.about_author }}</p>
+{% endif %}
+
+<p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+
+{% if user == current_user %}
+    <p><a href="{{ url_for('auth.dashboard') }}">Edit your profile</a></p>
+{% elif current_user.is_following(user) %}
+<p>
+    <form action="{{ url_for('followers.unfollow', username=user.username) }}" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.submit(value='Unfollow') }}
+    </form>
+</p>
+
+{% else %}
+<p>
+    <form action="{{ url_for('followers.follow', username=user.username) }}" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.submit(value='Follow') }}
+    </form>
+</p>
+{% endif %}
+{% endblock %}

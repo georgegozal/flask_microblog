@@ -8,7 +8,7 @@ post_view = Blueprint('post',__name__,template_folder="templates/posts")
 
 
 # view all posts
-@post_view.route('/posts')
+@post_view.route('/')
 def list():
     posts = Posts.query.order_by(Posts.date_posted.desc()).all()
     like = Like.query.all()
