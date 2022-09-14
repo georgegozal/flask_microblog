@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
+{% block style %}
+<style>
+    a {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <br>
-
-
 
 <div class="shadow p-3 mb-5 bg-body rounded">
     <h2>{{ post.title }}</h2>
@@ -23,7 +29,7 @@
             <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">
         </a>{{ like|length }}  Likes 
     {% endif %}
-
+        <p id="test">this will be change</p>
     <br>
     <br><br>
 
@@ -77,4 +83,11 @@
     <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a>
 {% endif %}
 
+{% endblock %}
+
+{% block script %}
+<script>
+    let test = document.getElementsById('test').innerHTML ="blah"
+    console.log(test)
+</script>
 {% endblock %}

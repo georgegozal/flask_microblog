@@ -10,6 +10,7 @@ post_view = Blueprint('post',__name__,template_folder="templates/posts")
 # view all posts
 @post_view.route('/')
 def list():
+    # current_user = current_user.followed_posts()
     posts = Posts.query.order_by(Posts.date_posted.desc()).all()
     like = Like.query.all()
     return render_template(
@@ -24,7 +25,10 @@ def post(id):
     post = Posts.query.get_or_404(id)
     comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
     like = Like.query.filter_by(post_id=post.id).all()
-    can_like = Like.query.filter_by(author=current_user.id,post_id=post.id).count() > 0
+    try:
+        can_like = Like.query.filter_by(author=current_user.id,post_id=post.id).count() > 0
+    except AttributeError:
+        can_like = False
 
 
     if form.validate_on_submit():

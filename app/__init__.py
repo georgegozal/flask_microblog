@@ -89,7 +89,7 @@ def register_admin_panel(app):
     admin.add_view(FileView(PROJECT_ROOT + '/static/uploads', name='Static Files'))
     #https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_fileadmin/
 
-    admin.add_link(MenuLink(name="Return Home",url='/posts'))
+    admin.add_link(MenuLink(name="Return Home",url='/'))
 
 
 
