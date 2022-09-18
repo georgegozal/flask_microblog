@@ -4,7 +4,8 @@ from werkzeug.utils import secure_filename
 from .forms import LoginForm,UserForm
 import uuid as uuid
 from .models import User
-from app.extensions import db
+from app.extensions import db,mail
+from flask_mail import Message
 
 
 
@@ -142,7 +143,8 @@ def register():
                 db.session.commit()
                 flash("User Added Successfully!")
                 login_user(user)
-                #send_email_after_register(email) # sent email 
+                # send email to new user
+                send_mail(user)
                 return redirect(url_for('auth.dashboard'))
             except:
                 flash('Error',category='error')
@@ -154,39 +156,14 @@ def register():
             'add_user.html',
             form=form)
 
-def send_email_after_register(email_to):
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    import datetime
-    now = datetime.datetime.now()
 
-    SERVER = 'smtp.gmail.com' # "your smtp server"
-    PORT = 587 # your port number
-    FROM =  'microblog@gmail.com' # "your from email id"
-    TO = email_to # "your to email ids"  # can be a list
-    PASS = '***********' # "your email id's password"
+def send_mail(user):
+    link = request.url[:-9]+ '/login'
 
-    message = MIMEMultipart()
-    message['Subject'] = 'Registration Success Message - [Automated Email]' + ' ' + str(now.day) + '-' + str(now.month) + '-' + str(
-    now.year)
-
-    message['From'] = FROM
-    message['To'] = TO
-
-    text = 'Your registration to our blog has been successed, Welcome!'
-    message.attach(MIMEText(text))
-    print('Initiating Server...')
-
-    server = smtplib.SMTP(SERVER, PORT)
-    #server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.set_debuglevel(1)
-    server.ehlo()
-    server.starttls()
-    #server.ehlo
-    server.login(FROM, PASS)
-    server.sendmail(FROM, TO, message.as_string())
-
-    print('Email Sent...')
-
-    server.quit()
+    msg = Message('"User Added Successfully!"',recipients = [f'{user.email}'])
+    msg.body = "Your registration was successful! \n \
+        please login here Log In"
+    msg.html = 'Your registration was successful! \n \
+        please login here <a href="{}">Log In</a>'.format(link)
+    mail.send(msg)
+    print("Message sent!")

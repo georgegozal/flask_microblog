@@ -6,7 +6,7 @@ from app.auth.models import UserView,FileView,User
 # from app.followers.models import UserFollowers
 from app.posts.models import Posts,Like,Comments,PostView,CommentView
 from app.commands.commands import create_test_user, init_db_command
-from app.extensions import db, migrate, login_manager,ckeditor
+from app.extensions import db, migrate, login_manager,ckeditor,mail
 # from app.api import api
 from app import views
 from app.posts.views import post_view
@@ -54,6 +54,9 @@ def register_extensions(app):
 
     # Setup Flask-Migrate
     migrate.init_app(app, db)
+
+    # Setup Flask-Mail
+    mail.init_app(app)
 
     # Setup Flask-CKEditor
     ckeditor.init_app(app)

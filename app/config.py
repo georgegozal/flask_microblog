@@ -24,8 +24,19 @@ class Config(object):
     DEBUG = True
     # Flask-SQLAlchemy
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MAIL_SERVER='smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USERNAME = 'g2gozal@gmail.com'
+    MAIL_PASSWORD = 'urcziazvrzbgttui'
+    MAIL_DEFAULT_SENDER = 'microblog@gmail.com'
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
 
     # if os.environ.get('DEBUG' == '1'):
     #     SQLALCHEMY_DATABASE_URI = return_db()
     # else:
     #     SQLALCHEMY_DATABASE_URI = return_db('PROD')
+
+
+
+
