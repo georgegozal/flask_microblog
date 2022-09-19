@@ -1,6 +1,5 @@
-# from venv import create
 from app import create_app
-# from app.config import db
+import os
 
 # with app.app_context(): 
 #     db.create_all()
