@@ -23,8 +23,8 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT = 587
-    MAIL_USERNAME = os.environ.get('email') or 'microblog@gmail.com'
-    MAIL_PASSWORD = os.environ.get('email_password')
+    MAIL_USERNAME = os.environ.get('EMAIL_ADDRESS') or 'microblog@gmail.com'
+    MAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('email') or 'microblog@gmail.com'
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
