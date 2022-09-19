@@ -137,7 +137,6 @@ def register():
                 profile_pic = pic_name
                 )
             user.set_password(form.password_hash.data)
-            # user.password(form.password_hash.data)
             try:
                 db.session.add(user)
                 db.session.commit()
@@ -162,8 +161,8 @@ def send_mail(user):
 
     msg = Message('"User Added Successfully!"',recipients = [f'{user.email}'])
     msg.body = "Your registration was successful! \n \
-        please login here Log In"
+        please login here Log In {}"
     msg.html = 'Your registration was successful! \n \
-        please login here <a href="{}">Log In</a>'.format(link)
+        please login here <a href="{}">Log In</a> '.format(link)
     mail.send(msg)
     print("Message sent!")

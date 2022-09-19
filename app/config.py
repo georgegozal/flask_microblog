@@ -1,7 +1,4 @@
 import os
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-
-
 
 def return_db(env='DEV'):
     if env == 'PROD':
@@ -18,7 +15,7 @@ def return_db(env='DEV'):
 class Config(object):
 
     PROJECT_NAME = "flask_microblog"
-    PROJECT_ROOT = PROJECT_ROOT
+    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(PROJECT_ROOT, 'db.sqlite')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'asd;lkajs-90 as;doaksdasd02 ;;/A'
     DEBUG = True
@@ -26,9 +23,9 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT = 587
-    MAIL_USERNAME = 'g2gozal@gmail.com'
-    MAIL_PASSWORD = 'urcziazvrzbgttui'
-    MAIL_DEFAULT_SENDER = 'microblog@gmail.com'
+    MAIL_USERNAME = os.environ.get('email') or 'microblog@gmail.com'
+    MAIL_PASSWORD = os.environ.get('email_password')
+    MAIL_DEFAULT_SENDER = os.environ.get('email') or 'microblog@gmail.com'
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
 

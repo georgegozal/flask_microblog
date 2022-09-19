@@ -1,6 +1,7 @@
 from flask import flash,url_for, redirect,render_template,Blueprint, request,jsonify
 from flask_login import login_user, login_required, current_user
 from .models import Posts,Comments, Like
+from app.auth.models import User
 from .forms import PostForm,SearchForm,CommentForm
 from app.extensions import db
 
@@ -12,6 +13,7 @@ post_view = Blueprint('post',__name__,template_folder="templates/posts")
 def list():
     # current_user = current_user.followed_posts()
     posts = Posts.query.order_by(Posts.date_posted.desc()).all()
+    # posts = User.query.get_or_404(current_user.id).followed_posts()
     like = Like.query.all()
     return render_template(
         'list.html',
