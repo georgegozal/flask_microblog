@@ -145,9 +145,9 @@ def register():
                 # send email to new user
                 send_mail(user)
                 return redirect(url_for('auth.dashboard'))
-            except:
-                flash('Error',category='error')
-    if form.errors != {}: #If there are not errors from the validations
+            except Exception as e:
+                print(e)
+    if form.errors != {}: #If there are errors from the validations
         for err_message in form.errors.values():
             flash(f'There was an error with creating a user: {err_message}', category='error')
 
