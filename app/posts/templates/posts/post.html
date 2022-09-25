@@ -29,7 +29,6 @@
             <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">
         </a>{{ like|length }}  Likes 
     {% endif %}
-        <p id="test">this will be change</p>
     <br>
     <br><br>
 
@@ -62,17 +61,34 @@
                 <p>  {{ comment.content }}</p>
             {% endif %}
         {% endif %}
+        
+        {% if comment.likes|length > 0 %}
+                
+            {% if current_user.is_authenticated %}
+                {% if current_user.username in  comment.likes|string %}
+                <p></p>
+                        <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
+                            <img src="{{url_for('static',filename='uploads/liked.png')}}" alt="liked" title="Like Comment" height="20">
+                        </a>{{ comment.likes|length }}  Likes 
+                    {% else %}
+                        <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
+                            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
+                        </a>{{ comment.likes|length }}  Likes
+                    {% endif %}
+            {% else %}
+                <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
+                    <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
+                </a>{{ comment.likes|length }}  Likes
+            {% endif %}
 
-        {# TODO: needs work #}
-        {% if can_like == True %}
-        <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
-            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
-        </a>{{ comment.likes|length }}  Likes 
+
+
         {% else %}
-        <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
-            <img src="{{url_for('static',filename='uploads/liked.png')}}" alt="liked" title="Like Comment" height="20">
-        </a>{{ comment.likes|length }}  Likes 
+            <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
+                <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
+            </a>{{ comment.likes|length }}  Likes
         {% endif %}
+        <br><br>
     {% endfor %}
 
 </div>
@@ -83,11 +99,4 @@
     <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a>
 {% endif %}
 
-{% endblock %}
-
-{% block script %}
-<script>
-    let test = document.getElementsById('test').innerHTML ="blah"
-    console.log(test)
-</script>
 {% endblock %}

@@ -1,3 +1,4 @@
+from xml.dom.minidom import Attr
 from flask import flash,url_for, redirect,render_template,Blueprint, request,jsonify
 from flask_login import login_user, login_required, current_user
 from .models import Posts,Comments, Like
@@ -34,19 +35,21 @@ def post(id):
 
 
     if form.validate_on_submit():
-        content = form.content.data
-        new_comment = Comments(
-            content = content,
-            poster_id = current_user.id,
-            post_id = post.id
-        )
+        try:
+            content = form.content.data
+            new_comment = Comments(
+                content = content,
+                poster_id = current_user.id,
+                post_id = post.id
+            )
 
 
-        db.session.add(new_comment)
-        db.session.commit()
-        flash('Comment has been added!',category='success')
-        return redirect(url_for('post.post',id=post.id))
-
+            db.session.add(new_comment)
+            db.session.commit()
+            flash('Comment has been added!',category='success')
+            return redirect(url_for('post.post',id=post.id))
+        except AttributeError:
+            flash('Please Log In To Leave a Comment!',category='error')
     return render_template(
         'post.html',
         post = post,
@@ -174,7 +177,7 @@ def delete_comment(post_id,comment_id):
         flash("You Aren`t Authorized To Delete That Comment!",category='error')
         return redirect(url_for('post.post', id=post_id))
 
-@post_view.route('/posts/<id>/like')#,methods=['POST'])
+@post_view.route('/posts/<id>/like')
 @login_required
 def like(id):
     # if request.method['POST']:
@@ -197,8 +200,11 @@ def like(id):
 @post_view.route('/post/<post_id>/comments/<id>/like')
 def like_comment(post_id,id):
     comment = Comments.query.get_or_404(id)
-    like = Like.query.filter_by(
-    author=current_user.id, comment_id=id).first()
+    try:
+        like = Like.query.filter_by(
+        author=current_user.id, comment_id=id).first()
+    except AttributeError:
+        like = False
 
     if not comment:
         return jsonify({'error': 'Comment does not exist.'}, 400)
@@ -206,9 +212,12 @@ def like_comment(post_id,id):
         db.session.delete(like)
         db.session.commit()
     else:
-        like = Like(author=current_user.id,comment_id=id)
-        db.session.add(like)
-        db.session.commit()
+        try:
+            like = Like(author=current_user.id,comment_id=id)
+            db.session.add(like)
+            db.session.commit()
+        except AttributeError:
+            flash("You Can`t Like Before Log In",category='error')
     return redirect(url_for('post.post', id=post_id))
 
 
