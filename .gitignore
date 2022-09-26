@@ -1,3 +1,8 @@
 migrations/
 *__pycache__*
 .env
+tests/
+app/static/*
+**test**
+**old**
+.idea

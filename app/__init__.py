@@ -5,7 +5,7 @@ from app.config import Config
 from app.auth.models import UserView,FileView,User
 # from app.followers.models import UserFollowers
 from app.posts.models import Posts,Like,Comments,PostView,CommentView
-from app.commands.commands import create_test_user, init_db_command
+from app.commands.commands import create_admin_user, init_db_command
 from app.extensions import db, migrate, login_manager,ckeditor,mail
 # from app.api import api
 from app import views
@@ -17,7 +17,7 @@ from app.posts.forms import SearchForm
 
 
 BLUEPRINTS = [post_view, auth,followers]
-COMMANDS = [create_test_user,init_db_command]
+COMMANDS = [create_admin_user,init_db_command]
 
 def create_app():
 
