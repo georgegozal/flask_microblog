@@ -63,8 +63,9 @@ def user_posts(username):
 
 @followers.route('/followers/posts')
 @login_required
-def followers_posts():
+def followed_posts():
     users_posts = []
     for user in  current_user.followed.all():
         users_posts.append(user.posts)
-    return render_template('followers_posts.html',users_posts=users_posts)
+    # posts = current_user.followed_posts()
+    return render_template('followed_posts.html',users_posts=users_posts)
