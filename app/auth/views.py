@@ -159,7 +159,7 @@ def register():
 
 def send_mail_after_register(user):
     link = request.url[:-9]+ '/login'
-
+    # link = url_for('auth.login')
     msg = Message('"User Added Successfully!"',recipients = [f'{user.email}'])
     msg.body = "Your registration was successful! \n \
         please login here Log In {}"

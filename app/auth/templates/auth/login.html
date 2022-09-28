@@ -19,10 +19,11 @@
         <br>
         {{ form.password.label(class="form-label") }}
         {{ form.password(class="form-control") }}
-
-        <a href="{{url_for('auth.reset_request')}}">Forgot Password?</a>
-        <br><br>
-        {{ form.submit(class="btn  btn-outline-success") }}
+        <br>
+        {{ form.remember_me.label(class="form-label") }}
+        {{ form.remember_me()}}
+        <br>
+        {{ form.submit(class="btn  btn-outline-success") }}   <a href="{{url_for('auth.reset_request')}}">Forgot Password?</a>
     </form>
 
 {% endblock %}
