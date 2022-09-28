@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, flash ,redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
-from .forms import LoginForm,UserForm
+from werkzeug.security import generate_password_hash
+from .forms import LoginForm,UserForm,RequestResetForm,ResetPasswordForm
 import uuid as uuid
 from .models import User
 from app.extensions import db,mail
@@ -143,7 +144,7 @@ def register():
                 flash("User Added Successfully!")
                 login_user(user)
                 # send email to new user
-                send_mail(user)
+                send_mail_after_register(user)
                 return redirect(url_for('auth.dashboard'))
             except Exception as e:
                 print(e)
@@ -156,7 +157,7 @@ def register():
             form=form)
 
 
-def send_mail(user):
+def send_mail_after_register(user):
     link = request.url[:-9]+ '/login'
 
     msg = Message('"User Added Successfully!"',recipients = [f'{user.email}'])
@@ -166,3 +167,44 @@ def send_mail(user):
         please login here <a href="{}">Log In</a> '.format(link)
     mail.send(msg)
     print("Message sent!")
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request',
+                    sender='noreply@demo.com',
+                    recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+    {url_for('auth.reset_token', token=token, _external=True)}
+
+    If you did not make this request then simply ignore this email and no changes will be made.
+    '''
+    mail.send(msg)
+
+@auth.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('auth.dashboard'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been sent with instructions to reset your password.', 'info')
+        return redirect(url_for('auth.login'))
+    return render_template('reset_request.html', title='Reset Password', form=form)
+
+
+@auth.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('auth.dashboard'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('auth.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.password_hash = generate_password_hash(form.password.data)
+        db.session.commit()
+        flash('Your password has been updated! You are now able to log in', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('reset_token.html', title='Reset Password', form=form)

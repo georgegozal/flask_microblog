@@ -6,8 +6,8 @@ from app.extensions import db
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from app.posts.models import Posts
-from sqlalchemy.sql import text
-
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from app.config import Config
 
 class User(db.Model,UserMixin):
     __tablename__ = 'users'
@@ -29,7 +29,18 @@ class User(db.Model,UserMixin):
     # User Can have 
     likes = db.relationship('Like',backref='user')
 
-    
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(Config.SECRET_KEY, expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(Config.SECRET_KEY)
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
 
     followers = db.Table('followers',
