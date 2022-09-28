@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
-
+{% block style %}
+<style>
+    a {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
 {% block content %}
 <br>
 <div class="card">
@@ -17,9 +23,10 @@
                         {% if user.about_author %}
                             <p>{{ user.about_author }}</p>
                         {% endif %}
-                        
+                        <a href="{{url_for('followers.user_posts',username=user.username)}}">{{user.name}}`s Posts</a> {{user.posts|length}}
+
                         <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
-                        
+
                         {% if user == current_user %}
                             <p><a href="{{ url_for('auth.dashboard') }}">Edit your profile</a></p>
                         {% elif current_user.is_following(user) %}

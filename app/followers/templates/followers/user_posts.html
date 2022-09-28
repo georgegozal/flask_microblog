@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<style>
+    a {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<br>
+<h3>Blog Posts...</h3>
+<br>
+{% for post in posts %}
+<div class="shadow p-3 mb-5 bg-body rounded">
+    <a href="{{ url_for('post.post', id=post.id ) }}"><h2>{{ post.title }}</h2></a>
+    <small>
+        By: <a href="{{ url_for('followers.user', username=post.poster.username) }}" >{{ post.poster.name }}</a> <br>
+        Date Posted: {{ post.date_posted }} <br><br>
+    </small>
+    {{ post.content|safe }} <br>
+
+    {#<a href="{{ url_for('post.like', id=post.id)}}">
+        <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" height="18">
+    </a>
+    {{ like | selectattr("post.id","equalto","like.post_id") | list | count}} Likes}
+    {% for l in like %}
+        {% if post.id == l.post_id %}
+            {{ like|count}}
+        {% endif %}
+    {% endfor #}
+
+
+    <br>
+
+    <a href="{{ url_for('post.post', id=post.id ) }}" class="btn btn-outline-secondary btn-sm">View Post</a>
+    {% if post.poster_id == current_user.id %}
+        <a href="{{ url_for('post.edit', id=post.id) }}" class="btn btn-outline-secondary btn-sm">Update</a>
+        <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a>
+    {% endif %}
+</div>
+
+{% endfor %}
+
+{% endblock %}

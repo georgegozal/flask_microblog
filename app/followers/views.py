@@ -53,3 +53,18 @@ def user(username):
     user = User.query.filter_by(username=username).first()
     form = EmptyForm()
     return render_template('user.html', user=user, form=form)
+
+@followers.route('/<username>/posts')
+@login_required
+def user_posts(username):
+    user = User.query.filter_by(username=username).first()
+    return render_template('user_posts.html', posts=user.posts)
+
+
+@followers.route('/followers/posts')
+@login_required
+def followers_posts():
+    users_posts = []
+    for user in  current_user.followed.all():
+        users_posts.append(user.posts)
+    return render_template('followers_posts.html',users_posts=users_posts)

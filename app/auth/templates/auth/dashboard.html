@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
-
+{% block style %}
+<style>
+    a {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
 {% block content %}
 <h1>Dashboard</h1>
 <br>
@@ -22,9 +28,10 @@
                         <strong>User Id: </strong>{{ current_user.id }}<br>
                         <strong>Email: </strong>{{ current_user.email }}<br>
                         <strong>About Author: </strong>{{ current_user.about_author}}<br>
-                        <strong>Date Joined: </strong>{{ current_user.date_added }}<br><br>
-
-
+                        <strong>Date Joined: </strong>{{ current_user.date_added }}<br>
+                        <strong><a href="{{url_for('followers.user_posts',username=user.username)}}">Posts: {{user.posts|length}}</a></strong><br>
+                        <strong>Followers: </strong>{{ user.followers.count() }} <br>
+                        <strong>Followed: </strong>{{ user.followed.count() }}
                     </div>
                     <div class="col-4">
                         {% if current_user.profile_pic %}
