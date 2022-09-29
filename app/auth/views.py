@@ -1,19 +1,19 @@
-from flask import Blueprint, render_template, request, flash ,redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
-from .forms import LoginForm,UserForm,RequestResetForm,ResetPasswordForm
+from .forms import LoginForm, UserForm, RequestResetForm, ResetPasswordForm
 import uuid as uuid
 from .models import User
-from app.extensions import db,mail
+from app.extensions import db, mail
 from flask_mail import Message
 
 
+auth = Blueprint('auth', __name__, template_folder='templates/auth')
 
-auth = Blueprint('auth',__name__,template_folder='templates/auth')
 
 # Create Login Page
-@auth.route('/login',methods=['GET','POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
 
@@ -23,10 +23,10 @@ def login():
             # Check the hash
             if user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
-                flash("Login Successfully",category="success")
+                flash("Login Successfully", category="success")
                 return redirect(url_for('auth.dashboard'))
             else:
-                flash("Wrong Password - Try Again!",category="error")
+                flash("Wrong Password - Try Again!", category="error")
         else:
             flash("That User Doesn`t Exist! Try Again...", category='error')
     return render_template(
@@ -34,16 +34,18 @@ def login():
         form=form
     )
 
+
 # Create Logout Page
-@auth.route('/logout',methods=['GET','POST'])
+@auth.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
     flash("You Have Been Logged Out!")
     return redirect(url_for('auth.login'))
 
+
 # Create Dashboard Page
-@auth.route('/dashboard',methods=['GET','POST'])
+@auth.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     form = UserForm()
@@ -59,8 +61,6 @@ def dashboard():
                 pic_filename = secure_filename(form.profile_pic.data.filename)
             except AttributeError:
                 pic_filename = '_'.join(user.profile_pic.split('_')[1:])
-
-
             # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
             if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
                 # Set UUID  
@@ -75,14 +75,14 @@ def dashboard():
                 user.profile_pic = pic_name
         try:
             db.session.commit()
-            flash('User Updated Successfully!',category='success')
+            flash('User Updated Successfully!', category='success')
             return render_template(
                 'dashboard.html',
                 user=current_user,
                 form=form
             )
-        except:
-            flash('Error!')
+        except Exception as e:
+            flash(e)
             return render_template(
                 'dashboard.html',
                 user=user,
@@ -95,8 +95,9 @@ def dashboard():
             form=form
         )
 
+
 # Register New User
-@auth.route('/user/add',methods=['GET','POST'])
+@auth.route('/user/add', methods=['GET', 'POST'])
 def register():
     form = UserForm()
     # print(request.form)
@@ -109,10 +110,10 @@ def register():
         try:
             user = User.query.filter_by(username=username).first()
             if user:
-                flash('Username Already is used',category='error')
+                flash('Username Already is used', category='error')
             user1 = User.query.filter_by(email=email).first()
             if user1:
-                flash('Email Already is used',category='error')
+                flash('Email Already is used', category='error')
         except Exception as e:
             print(e)
             user = None
@@ -148,7 +149,7 @@ def register():
                 return redirect(url_for('auth.dashboard'))
             except Exception as e:
                 print(e)
-    if form.errors != {}: #If there are errors from the validations
+    if form.errors != {}:  # If there are errors from the validations
         for err_message in form.errors.values():
             flash(f'There was an error with creating a user: {err_message}', category='error')
 
@@ -158,15 +159,16 @@ def register():
 
 
 def send_mail_after_register(user):
-    link = request.url[:-9]+ '/login'
+    link = request.url[:-9] + '/login'
     # link = url_for('auth.login')
-    msg = Message('"User Added Successfully!"',recipients = [f'{user.email}'])
+    msg = Message('"User Added Successfully!"', recipients = [f'{user.email}'])
     msg.body = "Your registration was successful! \n \
         please login here Log In {}"
     msg.html = 'Your registration was successful! \n \
         please login here <a href="{}">Log In</a> '.format(link)
     mail.send(msg)
     print("Message sent!")
+
 
 def send_reset_email(user):
     token = user.get_reset_token()
@@ -179,6 +181,7 @@ def send_reset_email(user):
     If you did not make this request then simply ignore this email and no changes will be made.
     '''
     mail.send(msg)
+
 
 @auth.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():

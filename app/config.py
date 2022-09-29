@@ -1,5 +1,6 @@
 import os
 
+
 def return_db(env='DEV'):
     if env == 'PROD':
         pg_user = 'dbuser'
@@ -21,19 +22,14 @@ class Config(object):
     DEBUG = True
     # Flask-SQLAlchemy
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAIL_SERVER='smtp.gmail.com'
+    MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USERNAME = os.environ.get('EMAIL_ADDRESS') or 'microblog@gmail.com'
     MAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('email') or 'microblog@gmail.com'
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-
     # if os.environ.get('DEBUG' == '1'):
     #     SQLALCHEMY_DATABASE_URI = return_db()
     # else:
     #     SQLALCHEMY_DATABASE_URI = return_db('PROD')
-
-
-
-
