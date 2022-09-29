@@ -63,7 +63,7 @@ def dashboard():
                 pic_filename = '_'.join(user.profile_pic.split('_')[1:])
             # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
             if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
-                # Set UUID  
+                # Set UUID
                 # this gives us unique name
                 # we need this incase two user uploaded pic with same name
                 pic_name = str(uuid.uuid1()) + "_" + pic_filename
@@ -122,7 +122,7 @@ def register():
             # Gram Image Name
             try:
                 pic_filename = secure_filename(form.profile_pic.data.filename)
-                # Set UUID  
+                # Set UUID
                 # this gives us unique name
                 # we need this incase two user uploaded pic with same name
                 pic_name = str(uuid.uuid1()) + "_" + pic_filename
@@ -133,11 +133,11 @@ def register():
                 print(e)
 
             user = User(
-                username = username,
-                name = form.name.data,
-                email = email,
-                profile_pic = pic_name
-                )
+                username=username,
+                name=form.name.data,
+                email=email,
+                profile_pic=pic_name
+                    )
             user.set_password(form.password_hash.data)
             try:
                 db.session.add(user)
@@ -161,7 +161,7 @@ def register():
 def send_mail_after_register(user):
     link = request.url[:-9] + '/login'
     # link = url_for('auth.login')
-    msg = Message('"User Added Successfully!"', recipients = [f'{user.email}'])
+    msg = Message('"User Added Successfully!"', recipients=[f'{user.email}'])
     msg.body = "Your registration was successful! \n \
         please login here Log In {}"
     msg.html = 'Your registration was successful! \n \
@@ -172,9 +172,7 @@ def send_mail_after_register(user):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Password Reset Request',
-                    sender='noreply@demo.com',
-                    recipients=[user.email])
+    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
     {url_for('auth.reset_token', token=token, _external=True)}
 

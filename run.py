@@ -1,7 +1,6 @@
 from app import create_app
-import os
 
-# with app.app_context(): 
+# with app.app_context():
 #     db.create_all()
 
 app = create_app()
