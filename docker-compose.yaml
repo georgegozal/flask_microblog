@@ -2,6 +2,7 @@ version: "3.3"  # Version of YAML optional since v1.27.0
 services:
   flask_app:
     build: .
+    restart: always
     ports:
       - "5000:5000"
     depends_on:
@@ -9,6 +10,7 @@ services:
 
   db:
     image: postgres:14.4-alpine
+    restart: always
     ports:
       - 5432:5432
     volumes:
@@ -16,3 +18,5 @@ services:
     environment:
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=mypassword
+
+    # entrypoint: [ "gunicorn", "-c", "/config/gunicorn.py", "manage:application" ]

@@ -1,21 +1,27 @@
-FROM python:3.10.6-slim-bullseye
+FROM python:3.10.7-alpine3.16
 # ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /flask_app
-WORKDIR /flask_app
+RUN mkdir /usr/src/flask_app
+WORKDIR /usr/src/flask_app
 
-COPY requirements.txt /flask_app/
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy everything to the flask_app directory
-COPY . /flask_app/ 
+COPY . . 
 
-ENV FLASK_APP=app \
+ENV FLASK_APP=run \
     FLASK_ENV=production
 
 EXPOSE 5000
 
 # # everything is above, is created during container build
 
-#CMD ["flask", "run", "--host=0.0.0.0"] 
-CMD ["python", "app.py"]
+# CMD ["flask", "run", "--host=0.0.0.0"] 
+CMD ["python", "run.py"]
+
+# https://www.docker.com/blog/containerized-python-development-part-1/
