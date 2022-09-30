@@ -1,12 +1,12 @@
-from flask import Flask,render_template
+from flask import Flask, render_template
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from app.config import Config
-from app.auth.models import UserView,FileView,User
+from app.auth.models import UserView, FileView, User
 # from app.followers.models import UserFollowers
-from app.posts.models import Posts,Like,Comments,PostView,CommentView
+from app.posts.models import Posts, Like, Comments, PostView, CommentView
 from app.commands.commands import create_admin_user, init_db_command
-from app.extensions import db, migrate, login_manager,ckeditor,mail
+from app.extensions import db, migrate, login_manager, ckeditor, mail
 from app.api.views import api
 from app.posts.views import post_view
 from app.auth.views import auth
@@ -15,8 +15,9 @@ from app.followers.views import followers
 from app.posts.forms import SearchForm
 
 
-BLUEPRINTS = [post_view, auth,followers,api]
-COMMANDS = [create_admin_user,init_db_command]
+BLUEPRINTS = [post_view, auth, followers, api]
+COMMANDS = [create_admin_user, init_db_command]
+
 
 def create_app():
 
@@ -28,7 +29,7 @@ def create_app():
     register_blueprints(app)
     register_admin_panel(app)
 
-    # Search 
+    # Search
     @app.context_processor
     def base():
         searchform = SearchForm()
@@ -41,10 +42,11 @@ def create_app():
 
     # Internal Server Error
     @app.errorhandler(500)
-    def page_not_found(e):
+    def internal_server_error(e):
         return render_template('500.html'), 500
 
     return app
+
 
 def register_extensions(app):
 
@@ -60,7 +62,7 @@ def register_extensions(app):
     # Setup Flask-CKEditor
     ckeditor.init_app(app)
 
-    #Flask-RESTful
+    # Flask-RESTful
     # api.init_app(app)
 
     # Flask-Login
@@ -85,15 +87,9 @@ def register_commands(app):
 
 def register_admin_panel(app):
     admin = Admin(app)
-    admin.add_view(UserView(User,db.session))
+    admin.add_view(UserView(User, db.session))
     admin.add_view(PostView(Posts, db.session))
     admin.add_view(CommentView(Comments, db.session))
     admin.add_view(FileView(Config.PROJECT_ROOT + '/static/uploads', name='Static Files'))
-    #https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_fileadmin/
-
-    admin.add_link(MenuLink(name="Return Home",url='/'))
-
-
-
-
-
+    # https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_fileadmin/
+    admin.add_link(MenuLink(name="Return Home", url='/'))

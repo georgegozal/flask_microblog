@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import redirect,url_for
-from flask_login import UserMixin,current_user
+from flask import redirect, url_for
+from flask_login import UserMixin, current_user
 from datetime import datetime
 from app.extensions import db
 from flask_admin.contrib.sqla import ModelView
@@ -9,25 +9,26 @@ from app.posts.models import Posts
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app.config import Config
 
-class User(db.Model,UserMixin):
+
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20),nullable=False,unique=True)
-    name = db.Column(db.String(100), nullable=False,index=True)
-    email = db.Column(db.String(100), nullable=False,unique=True)
-    about_author = db.Column(db.String(500),nullable=True)
+    username = db.Column(db.String(20), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False, index=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    about_author = db.Column(db.String(500), nullable=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
-    profile_pic = db.Column(db.String(128),nullable=True)
+    profile_pic = db.Column(db.String(128), nullable=True)
     password_hash = db.Column(db.String(128))
-    role = db.Column(db.String(100),default='user')
+    role = db.Column(db.String(100), default='user')
 
     # User Can Have Many Posts # One to Many
-    posts = db.relationship('Posts',backref='poster')
+    posts = db.relationship('Posts', backref='poster')
     # User Can Have Many Comments # One to Many
-    comments = db.relationship('Comments',backref='commenter')
-    # User Can have 
-    likes = db.relationship('Like',backref='user')
+    comments = db.relationship('Comments', backref='commenter')
+    # User Can have
+    likes = db.relationship('Like', backref='user')
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(Config.SECRET_KEY, expires_sec)
@@ -38,10 +39,10 @@ class User(db.Model,UserMixin):
         s = Serializer(Config.SECRET_KEY)
         try:
             user_id = s.loads(token)['user_id']
-        except:
+        except Exception as e:
+            print(e)
             return None
         return User.query.get(user_id)
-
 
     followers = db.Table('followers',
         db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
@@ -54,7 +55,7 @@ class User(db.Model,UserMixin):
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
-    #get posts from followed users, and own posts
+    # get posts from followed users, and own posts
     def followed_posts(self):
         # followed = Posts.query.join(
         #     self.followers, (self.followers.c.followed_id == Posts.poster_id)).filter(
@@ -63,9 +64,8 @@ class User(db.Model,UserMixin):
         for user in self.followed.all():
             posts.append(Posts.query.filter_by(poster_id=user.id).all())
         own = Posts.query.filter_by(poster_id=self.id)
-        return posts  + list(own)
+        return posts + list(own)
         # return posts.union(own).order_by(Posts.date_posted.desc())
-
 
     def follow(self, user):
         if not self.is_following(user):
@@ -89,10 +89,11 @@ class User(db.Model,UserMixin):
         return self.role == "admin"
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password,'sha256')
+        self.password_hash = generate_password_hash(password, 'sha256')
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
 
 class UserView(ModelView):
 
@@ -100,9 +101,9 @@ class UserView(ModelView):
         try:
             is_admin = current_user.is_admin()
         except AttributeError as a:
+            print(a)
             is_admin = False
-        return is_admin 
-
+        return is_admin
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('post.list'))
@@ -110,19 +111,21 @@ class UserView(ModelView):
     can_create = False
     can_delete = False
     can_edit = True
-    column_exclude_list = ['password_hash',]
-    column_searchable_list = ['username','name','email']
+    column_exclude_list = ['password_hash']
+    column_searchable_list = ['username', 'name', 'email']
     column_filters = ['role']
-    column_editable_list = ['name','role']
-    column_list = ('id','username','name','email','about_author','date_added','role',)
+    column_editable_list = ['name', 'role']
+    column_list = ('id', 'username', 'name', 'email', 'about_author', 'date_added', 'role')
+
 
 class FileView(FileAdmin):
     def is_accessible(self):
         try:
             is_admin = current_user.is_admin()
         except AttributeError as a:
+            print(a)
             is_admin = False
-        return is_admin 
+        return is_admin
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('post.list'))

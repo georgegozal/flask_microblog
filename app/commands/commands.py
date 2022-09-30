@@ -4,6 +4,7 @@ from app.extensions import db
 from app.auth.models import User
 from werkzeug.security import generate_password_hash
 
+
 @click.command('make_admin')
 @with_appcontext
 def create_admin_user():
@@ -13,7 +14,7 @@ def create_admin_user():
         email='admin@gmail.com',
         password_hash=generate_password_hash('admin', 'sha256'),
         role='admin'
-        )
+            )
     try:
         db.session.add(admin_user)
         db.session.commit()
@@ -21,26 +22,29 @@ def create_admin_user():
     except Exception as e:
         click.echo(e)
 
+
 users = [
     {
-        'username':'asdkj',
-        'name':'asdaslkm',
-        'email':'mnlkj@sample@gmail.com',
-        'password_hash':'lkjdasliudasd'
+        'username': 'user1',
+        'name': 'user1',
+        'email': 'user1@gmail.com',
+        'password_hash': 'user11'
     },
     {
-        'username':'asdkj1',
-        'name':'asdaslkm2',
-        'email':'mnlksj@sample@gmail.com',
-        'password_hash':'lkjdasliudasd'
+        'username': 'user2',
+        'name': 'user2',
+        'email': 'user2@gmail.com',
+        'password_hash': 'user22'
     },
     {
-        'username':'ass1wdkj',
-        'name':'asdaslkmds',
-        'email':'mnlkjasd@sample@gmail.com',
-        'password_hash':'lkjdasliudasd'
-    }
+        'username': 'user3',
+        'name': 'user3',
+        'email': 'user3@gmail.com',
+        'password_hash': 'user3'
+    },
 ]
+
+
 @click.command('create_users')
 @with_appcontext
 def create_users():
@@ -50,7 +54,7 @@ def create_users():
             name=user['name'],
             email=user['email'],
             password_hash=generate_password_hash(user['password_hash'], 'sha256'),
-            )
+                )
         try:
             db.session.add(new_user)
             db.session.commit()
