@@ -12,8 +12,7 @@
 <br>
 <h3>Your and Your Followers Posts...</h3>
 <br>
-{% for user in users_posts %}
-{% for post in user %}
+{% for post in users_posts %}
 <div class="shadow p-3 mb-5 bg-body rounded">
     <a href="{{ url_for('post.post', id=post.id ) }}"><h2>{{ post.title }}</h2></a>
     <small>
@@ -42,6 +41,6 @@
     {% endif %}
 </div>
 {% endfor %}
-{% endfor %}
+
 
 {% endblock %}

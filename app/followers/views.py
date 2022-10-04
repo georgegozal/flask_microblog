@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from .forms import EmptyForm
 from app.auth.models import User
 from app.extensions import db
+from app.posts.models import Posts
 
 
 followers = Blueprint('followers', __name__, template_folder='templates/followers')
@@ -66,8 +67,7 @@ def user_posts(username):
 @followers.route('/followers/posts')
 @login_required
 def followed_posts():
-    users_posts = []
-    for user in current_user.followed.all():
-        users_posts.append(user.posts)
-    # posts = current_user.followed_posts()
+    posts = current_user.followed_posts
+    own = Posts.query.filter_by(poster_id=current_user.id)
+    users_posts = posts.union(own).order_by(Posts.date_posted.desc()).all()
     return render_template('followed_posts.html', users_posts=users_posts)

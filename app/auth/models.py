@@ -50,21 +50,30 @@ class User(db.Model, UserMixin):
     )
 
     followed = db.relationship(
-        'User', secondary=followers,
+        'User', 
+        secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
+    followed_posts = db.relationship(
+        'Posts', 
+        secondary=followers,#'join(Posts,User).join(followers)',
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(Posts.poster_id == followers.c.followed_id),
+        lazy='dynamic', 
+        viewonly=True)
+
     # get posts from followed users, and own posts
-    def followed_posts(self):
-        # followed = Posts.query.join(
-        #     self.followers, (self.followers.c.followed_id == Posts.poster_id)).filter(
-        #         self.followers.c.follower_id == self.id)
-        posts = []
-        for user in self.followed.all():
-            posts.append(Posts.query.filter_by(poster_id=user.id).all())
-        own = Posts.query.filter_by(poster_id=self.id)
-        return posts + list(own)
+    # def followed_posts(self):
+    #     # followed = Posts.query.join(
+    #     #     self.followers, (self.followers.c.followed_id == Posts.poster_id)).filter(
+    #     #         self.followers.c.follower_id == self.id)
+    #     posts = []
+    #     for user in self.followed.all():
+    #         posts.append(Posts.query.filter_by(poster_id=user.id).all())
+    #     own = Posts.query.filter_by(poster_id=self.id)
+    #     return posts + list(own)
         # return posts.union(own).order_by(Posts.date_posted.desc())
 
     def follow(self, user):
