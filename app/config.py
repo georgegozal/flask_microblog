@@ -19,8 +19,6 @@ class Config(object):
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(PROJECT_ROOT, 'db.sqlite')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'asd;lkajs-90 as;doaksdasd02 ;;/A'
-    DEBUG = True
-    # Flask-SQLAlchemy
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
@@ -29,7 +27,12 @@ class Config(object):
     MAIL_DEFAULT_SENDER = os.environ.get('email') or 'microblog@gmail.com'
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-    # if os.environ.get('DEBUG' == '1'):
-    #     SQLALCHEMY_DATABASE_URI = return_db()
-    # else:
-    #     SQLALCHEMY_DATABASE_URI = return_db('PROD')
+    if os.environ.get('FLASK_ENV') == 'production':
+        # SQLALCHEMY_DATABASE_URI = return_db('PROD')
+        FLASK_DEBUG=False
+        FLASK_ENV='production'
+
+    else:
+        # SQLALCHEMY_DATABASE_URI = return_db()
+        FLASK_DEBUG=True
+        FLASK_ENV='development'
