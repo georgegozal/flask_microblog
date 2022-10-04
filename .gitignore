@@ -3,6 +3,7 @@ migrations/
 .env
 tests/
 app/static/*
-**test**
+**test/**
+**test.html
 **old**
 .idea
