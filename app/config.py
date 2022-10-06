@@ -1,4 +1,5 @@
 import os
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 
 def return_db(env='DEV'):
@@ -16,7 +17,7 @@ def return_db(env='DEV'):
 class Config(object):
 
     PROJECT_NAME = "flask_microblog"
-    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+    PROJECT_ROOT = PROJECT_ROOT
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(PROJECT_ROOT, 'db.sqlite')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'asd;lkajs-90 as;doaksdasd02 ;;/A'
     SQLALCHEMY_TRACK_MODIFICATIONS = False

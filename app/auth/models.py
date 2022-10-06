@@ -64,18 +64,6 @@ class User(db.Model, UserMixin):
         lazy='dynamic', 
         viewonly=True)
 
-    # get posts from followed users, and own posts
-    # def followed_posts(self):
-    #     # followed = Posts.query.join(
-    #     #     self.followers, (self.followers.c.followed_id == Posts.poster_id)).filter(
-    #     #         self.followers.c.follower_id == self.id)
-    #     posts = []
-    #     for user in self.followed.all():
-    #         posts.append(Posts.query.filter_by(poster_id=user.id).all())
-    #     own = Posts.query.filter_by(poster_id=self.id)
-    #     return posts + list(own)
-        # return posts.union(own).order_by(Posts.date_posted.desc())
-
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
