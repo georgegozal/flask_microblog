@@ -6,6 +6,28 @@ on:
 
 jobs:
 
+  test:
+    runs-on:  ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windouws-latest]
+        python-versions:  [3.9, 3.10]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Up Python for ${{ matrix.python-versions }}
+        uses: action/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-versions }}
+      
+      - name: Instaling Dependencies
+        run:  pip install tox tox-gh-actions
+        
+      - name: Running Tests with tox
+        run:  tox
+
   build:
 
     runs-on: ubuntu-latest
