@@ -25,10 +25,13 @@ def list():
 def post(id):
     form = CommentForm()
     post = Posts.query.get_or_404(id)
-    comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
+    comments = Comments.query.filter_by(post_id=post.id)\
+        .order_by(Comments.date_posted.desc()).all()
     like = Like.query.filter_by(post_id=post.id).all()
     try:
-        can_like = Like.query.filter_by(author=current_user.id, post_id=post.id).count() > 0
+        can_like = Like.query.filter_by(
+            author=current_user.id,
+            post_id=post.id).count() > 0
     except AttributeError:
         can_like = False
 
@@ -139,7 +142,8 @@ def update_comment(comment_id, post_id):
     form = CommentForm()
     comment = Comments.query.get_or_404(comment_id)
     post = Posts.query.get_or_404(post_id)
-    comments = Comments.query.filter_by(post_id=post.id).order_by(Comments.date_posted.desc()).all()
+    comments = Comments.query.filter_by(
+        post_id=post.id).order_by(Comments.date_posted.desc()).all()
     like = Like.query.filter_by(post_id=post.id).all()
 
     if form.validate_on_submit():
@@ -198,7 +202,8 @@ def like(id):
         db.session.add(like)
         db.session.commit()
     return redirect(url_for('post.post', id=post.id))
-    # return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.author, post.likes)})
+    # return jsonify({"likes": len(post.likes),
+    # "liked": current_user.id in map(lambda x: x.author, post.likes)})
 
 
 @post_view.route('/post/<post_id>/comments/<id>/like')
@@ -234,9 +239,10 @@ def search():
         post.searched = form.searched.data
         # Query the Database
 
-        # posts_by_content = posts.filter(Posts.content.like('%' + post.searched + '%'))
-        # posts_by_title = posts.filter(Posts.title.like('%' + post.searched + '%'))
-
+        # posts_by_content = posts.filter(
+        #     Posts.content.like('%' + post.searched + '%'))
+        # posts_by_title = posts.filter(
+        #     Posts.title.like('%' + post.searched + '%'))
         # posts_by_content = posts.order_by(Posts.title).all()
         # posts_by_title = posts.order_by(Posts.title).all()
         # return render_template(

@@ -9,7 +9,8 @@ def return_db(env='DEV'):
         pg_db = 'microblog'
         pg_host = 'localhost'
         pg_port = 5432
-        return f'postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}'
+        return f'postgresql+psycopg2://\
+            {pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}'
     else:
         return 'sqlite:///db.sqlite'
 
@@ -18,7 +19,8 @@ class Config(object):
 
     PROJECT_NAME = "flask_microblog"
     PROJECT_ROOT = PROJECT_ROOT
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(PROJECT_ROOT, 'db.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') \
+        or 'sqlite:///' + os.path.join(PROJECT_ROOT, 'db.sqlite')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'asd;lkajs-90 as;doaksdasd02 ;;/A'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = 'smtp.gmail.com'
@@ -30,10 +32,10 @@ class Config(object):
     MAIL_USE_SSL = False
     if os.environ.get('FLASK_ENV') == 'production':
         # SQLALCHEMY_DATABASE_URI = return_db('PROD')
-        FLASK_DEBUG=False
-        FLASK_ENV='production'
+        FLASK_DEBUG = False
+        FLASK_ENV = 'production'
 
     else:
         # SQLALCHEMY_DATABASE_URI = return_db()
-        FLASK_DEBUG=True
-        FLASK_ENV='development'
+        FLASK_DEBUG = True
+        FLASK_ENV = 'development'

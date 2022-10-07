@@ -53,8 +53,9 @@ def create_users():
             username=user['username'],
             name=user['name'],
             email=user['email'],
-            password_hash=generate_password_hash(user['password_hash'], 'sha256'),
-                )
+            password_hash=generate_password_hash(
+                user['password_hash'], 'sha256'),
+            )
         try:
             db.session.add(new_user)
             db.session.commit()

@@ -61,8 +61,10 @@ def dashboard():
                 pic_filename = secure_filename(form.profile_pic.data.filename)
             except AttributeError:
                 pic_filename = '_'.join(user.profile_pic.split('_')[1:])
-            # Check if user has not a profile_pic or  uploading new pic is not the same as uploaded one
-            if not user.profile_pic or '_'.join(user.profile_pic.split('_')[1:]) != pic_filename:
+            # Check if user has not a profile_pic or
+            # uploading new pic is not the same as uploaded one
+            if not user.profile_pic or '_'.join(
+                user.profile_pic.split('_')[1:]) != pic_filename:
                 # Set UUID
                 # this gives us unique name
                 # we need this incase two user uploaded pic with same name
@@ -149,9 +151,10 @@ def register():
                 return redirect(url_for('auth.dashboard'))
             except Exception as e:
                 print(e)
-    if form.errors != {}:  # If there are errors from the validations
+    if form.errors != {}:  # If there are validations errors
         for err_message in form.errors.values():
-            flash(f'There was an error with creating a user: {err_message}', category='error')
+            flash(f'There was an error with creating a user: \
+                {err_message}', category='error')
 
     return render_template(
             'add_user.html',
@@ -172,11 +175,13 @@ def send_mail_after_register(user):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+    msg = Message('Password Reset Request',
+        sender='noreply@demo.com', recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
     {url_for('auth.reset_token', token=token, _external=True)}
 
-    If you did not make this request then simply ignore this email and no changes will be made.
+    If you did not make this request then simply
+    ignore this email and no changes will be made.
     '''
     mail.send(msg)
 

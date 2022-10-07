@@ -50,18 +50,18 @@ class User(db.Model, UserMixin):
     )
 
     followed = db.relationship(
-        'User', 
+        'User',
         secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     followed_posts = db.relationship(
-        'Posts', 
-        secondary=followers,#'join(Posts,User).join(followers)',
+        'Posts',
+        secondary=followers,  # 'join(Posts,User).join(followers)',
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(Posts.poster_id == followers.c.followed_id),
-        lazy='dynamic', 
+        lazy='dynamic',
         viewonly=True)
 
     def follow(self, user):
