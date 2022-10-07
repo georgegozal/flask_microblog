@@ -7,20 +7,29 @@ on:
 jobs:
 
   test:
-    runs-on: ${{ matrix.os }}
+
+    runs-on:  ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-versions: ['3.9', '3.10']
+        os: [ubuntu-latest, windouws-latest]
+        python-versions:  [3.9, 3.10]
+
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python for ${{ matrix.python-versions }}
+
+      - name: Set Up Python for ${{ matrix.python-versions }}
         uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-versions }}
+        with:
+          python-version: ${{ matrix.python-versions }}
+      
+      - name: Instaling Dependencies
+        run:  pip install tox tox-gh-actions
+        
+      - name: Running Tests with tox
+        run:  tox
 
 
   build:
