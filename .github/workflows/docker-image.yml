@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windouws-latest]
+        os: [ubuntu-latest, windows-latest]
         python-versions:  [3.8, 3.9]
 
 
