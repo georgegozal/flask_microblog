@@ -59,7 +59,7 @@ def create_users():
         try:
             db.session.add(new_user)
             db.session.commit()
-            click.echo('Admin has been added!')
+            click.echo(f'User {new_user.username} has been added!')
         except Exception as e:
             click.echo(e)
 
