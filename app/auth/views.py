@@ -146,8 +146,11 @@ def register():
                 db.session.commit()
                 flash("User Added Successfully!")
                 login_user(user)
-                # send email to new user
-                send_mail_after_register(user)
+                try:
+                    # send email to new user
+                    send_mail_after_register(user)
+                except Exception as e:
+                    print(e)
                 return redirect(url_for('auth.dashboard'))
             except Exception as e:
                 print(e)
