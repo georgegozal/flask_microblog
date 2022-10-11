@@ -27,7 +27,9 @@
                         <strong>Username: </strong>{{ current_user.username }}<br>
                         <strong>User Id: </strong>{{ current_user.id }}<br>
                         <strong>Email: </strong>{{ current_user.email }}<br>
-                        <strong>About Author: </strong>{{ current_user.about_author}}<br>
+                        {% if current_user.about_author != "" or current_user.about_author == "None" %}
+                            <strong>About Author: </strong>{{ current_user.about_author}}<br>
+                        {% endif %}
                         <strong>Date Joined: </strong>{{ current_user.date_added }}<br>
                         <strong><a href="{{url_for('followers.user_posts',username=user.username)}}">Posts: {{user.posts|length}}</a></strong><br>
                         <strong>Followers: </strong>{{ user.followers.count() }} <br>
