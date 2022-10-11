@@ -4,6 +4,8 @@ import tempfile
 import pytest
 from app import create_app
 from app.commands.commands import create_users ,init_db, create_admin_user
+from app.config import PROJECT_ROOT
+
 
 @pytest.fixture
 def app():
@@ -21,7 +23,6 @@ def app():
     #     init_db()
     #     create_users()
     #     create_admin_user()
-    #     # get_db().executescript(_data_sql)
 
     yield app
 
