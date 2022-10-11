@@ -71,7 +71,8 @@ class PostView(ModelView):
     can_delete = False
     can_edit = True
     column_list = ('id', 'title', 'date_posted', 'content', 'poster', 'likes')
-
+    column_searchable_list = ['id','title', 'poster.username']
+    column_filters = ['date_posted','poster.username']
 
 class CommentView(ModelView):
     def is_accessible(self):
@@ -89,3 +90,4 @@ class CommentView(ModelView):
     can_delete = True
     can_edit = False
     column_list = ('content', 'date_posted', 'commenter', 'post', 'likes')
+    column_searchable_list = ['id','content', 'commenter.username','post.title']
