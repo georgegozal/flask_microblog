@@ -109,7 +109,7 @@ class UserView(ModelView):
     can_delete = False
     can_edit = True
     column_exclude_list = ['password_hash']
-    column_searchable_list = ['id','username', 'name', 'email']
+    column_searchable_list = ['id', 'username', 'name', 'email']
     column_filters = ['role']
     column_editable_list = ['name', 'role']
     column_list = ('id', 'username', 'name', 'email', 'about_author', 'date_added', 'role')
