@@ -1,2 +1,2 @@
 # flask_microblog
-[![Build status](https://github.com/georgegozal/flask_microblog/workflows/docker-image/badge.svg)](https://github.com/georgegozal/flask_microblog/actions)
+[![Docker Image CI](https://github.com/georgegozal/flask_microblog/actions/workflows/docker-image.yml/badge.svg)](https://github.com/georgegozal/flask_microblog/actions/workflows/docker-image.yml)
