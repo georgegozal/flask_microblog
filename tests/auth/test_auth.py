@@ -25,14 +25,14 @@ def test_login(client):
     assert client.get('/login').status_code == 200
 
     with client:
-        client.post('/login',data={'username': 'ivan','password': '1234qwer'})
+        client.post('/login',data={'username': 'test_user','password': 'password123'})
         assert current_user.is_authenticated
 
 
 def test_failed_register(client):
     assert client.get('/user/add').status_code == 200
     response = client.post('/user/add', 
-        data={'username': "test_user", 'name': 'test', "email": "test_userEmail0555@mail.com",
+        data={'username': "pytest", 'name': 'test', "email": "test_userEmail0555@mail.com",
                 "password_hash": "password5", "password_hash2": "password7"}, 
                     follow_redirects=True)
     assert b"Passwords Must Match!" in response.data
@@ -41,7 +41,7 @@ def test_failed_register(client):
 def test_successful_register(client):
     assert client.get('/user/add').status_code == 200
     response = client.post('/user/add', 
-        data={'username': "test_user", 'name': 'test', "email": "test_userEmail0555@mail.com",
+        data={'username': "pytest", 'name': 'test', "email": "test_userEmail0555@mail.com",
                 "password_hash": "password5", "password_hash2": "password5"}, 
                     follow_redirects=True)
     assert response.request.path == '/dashboard'

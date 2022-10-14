@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 from app import create_app
-from app.commands.commands import create_users ,init_db, create_admin_user
+from app.commands.commands import init_db, add_admin
 from app.config import PROJECT_ROOT
 
 
@@ -15,19 +15,18 @@ def app():
     app.config.update(
         {
         'TESTING': True,
-        # 'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + db_path + '.sqlite',
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + db_path + '.sqlite',
         'WTF_CSRF_ENABLED': False
     })
 
-    # with app.app_context():
-    #     init_db()
-    #     create_users()
-    #     create_admin_user()
+    with app.app_context():
+        init_db()
+        add_admin()
 
     yield app
 
-    # os.close(db_fd)
-    # os.unlink(db_path)
+    os.close(db_fd)
+    os.unlink(db_path)
 
 
 @pytest.fixture

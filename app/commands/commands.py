@@ -5,9 +5,7 @@ from app.auth.models import User
 from werkzeug.security import generate_password_hash
 
 
-@click.command('make_admin')
-@with_appcontext
-def create_admin_user():
+def add_admin():
     admin_user = User(
         username='admin',
         name='Admin',
@@ -23,51 +21,29 @@ def create_admin_user():
         click.echo(e)
 
 
-users = [
-    {
-        'username': 'user1',
-        'name': 'user1',
-        'email': 'user1@gmail.com',
-        'password_hash': 'user11'
-    },
-    {
-        'username': 'user2',
-        'name': 'user2',
-        'email': 'user2@gmail.com',
-        'password_hash': 'user22'
-    },
-    {
-        'username': 'user3',
-        'name': 'user3',
-        'email': 'user3@gmail.com',
-        'password_hash': 'user3'
-    },
-]
-
-
-@click.command('create_users')
+@click.command('add_admin')
 @with_appcontext
-def create_users():
-    for user in users:
-        new_user = User(
-            username=user['username'],
-            name=user['name'],
-            email=user['email'],
-            password_hash=generate_password_hash(
-                user['password_hash'], 'sha256'),
-            )
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-            click.echo(f'User {new_user.username} has been added!')
-        except Exception as e:
-            click.echo(e)
+def add_admin_command():
+    add_admin()
 
 
-@click.command('init_db')
-@with_appcontext
 def init_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
+    test_user = User(
+        username='test_user',
+        name='test',
+        email='test@gmail.com',
+        password_hash=generate_password_hash(
+            'password123', 'sha256')
+    )
+    db.session.add(test_user)
+    db.session.commit()
+
+
+@click.command('init_db')
+@with_appcontext
+def init_db_command():
+    init_db()
     click.echo("Created database")
