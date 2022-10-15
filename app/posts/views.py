@@ -62,6 +62,7 @@ def post(id):
 
 # Add Post Page
 @post_view.route('/add-post', methods=['GET', 'POST'])
+@login_required
 def add():
     form = PostForm()
 
