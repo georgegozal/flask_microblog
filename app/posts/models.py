@@ -68,7 +68,7 @@ class PostView(ModelView):
         return redirect(url_for('post.list'))
 
     can_create = False
-    can_delete = False
+    can_delete = True
     can_edit = True
     column_list = ('id', 'title', 'date_posted', 'content', 'poster', 'likes')
     column_searchable_list = ['id', 'title', 'poster.username']
