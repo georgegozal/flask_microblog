@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block style %}
+{% block head %}
 <style>
     a {
     text-decoration: none;
@@ -12,7 +12,7 @@
 <br>
 <h3>Blog Posts...</h3>
 <br>
-{% for post in posts %}
+{% for post in posts.items %}
 <div class="shadow p-3 mb-5 bg-body rounded">
     <a href="{{ url_for('post.post', id=post.id ) }}"><h2>{{ post.title }}</h2></a>
     <small>
@@ -42,5 +42,39 @@
 </div>
 
 {% endfor %}
-
+<div class="pagination">
+    {% if posts.has_prev %}
+        <span>
+            <a class='page-number' href="{{ url_for('post.list', page=posts.prev_num) }}">
+                {{ '<<<' }}
+            </a>
+        </span>
+    {% endif %}
+    {% for number in posts.iter_pages() %}
+        {% if posts.page != number %}
+            <span>
+                    <a class='page-number'
+                        href="{{ url_for('post.list', page=number) }}">
+                    {{ number }}
+                    </a>
+            </span>
+        {% else %}
+            <span>{{ number }}</span>
+        {% endif %}
+    {% endfor %}
+    {% if posts.has_next %}
+        <span>
+            <a class='page-number'
+                href="{{ url_for('post.list', page=posts.next_num) }}">
+                {{ '>>>' }}
+            </a>
+        </span>
+    {% endif %}
+</div>
+{#% if prev_page %}
+    <a href="{{ prev_page }}">Newer posts</a>
+{% endif %}
+{% if next_page %}
+    <a href="{{ next_page }}">Older posts</a>
+{% endif %#}
 {% endblock %}

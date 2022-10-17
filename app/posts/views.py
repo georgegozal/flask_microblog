@@ -1,8 +1,9 @@
-from flask import flash, url_for, redirect, render_template, Blueprint, jsonify
+from flask import flash, url_for, redirect, render_template, Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from .models import Posts, Comments, Like
 from .forms import PostForm, SearchForm, CommentForm
 from app.extensions import db
+
 
 post_view = Blueprint('post', __name__, template_folder="templates/posts")
 
@@ -10,9 +11,11 @@ post_view = Blueprint('post', __name__, template_folder="templates/posts")
 # view all posts
 @post_view.route('/')
 def list():
-    # current_user = current_user.followed_posts()
-    posts = Posts.query.order_by(Posts.date_posted.desc()).all()
-    # posts = User.query.get_or_404(current_user.id).followed_posts()
+
+    page = request.args.get('page', 1, type=int)
+    posts = Posts.query.order_by(Posts.date_posted.desc()).paginate(
+        page, 1, False)
+
     like = Like.query.all()
     return render_template(
         'list.html',
