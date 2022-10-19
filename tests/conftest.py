@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 from app import create_app
-from app.commands.commands import init_db, add_admin
+from app.commands import init_db, add_admin
 from app.config import PROJECT_ROOT
 
 

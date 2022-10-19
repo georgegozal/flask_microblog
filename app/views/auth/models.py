@@ -5,7 +5,7 @@ from datetime import datetime
 from app.extensions import db
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
-from app.posts.models import Posts
+from app.views.posts.models import Posts
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app.config import Config
 

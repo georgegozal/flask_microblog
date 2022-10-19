@@ -9,7 +9,7 @@ from app.extensions import db, mail
 from flask_mail import Message
 
 
-auth = Blueprint('auth', __name__, template_folder='templates/auth')
+auth = Blueprint('auth', __name__, template_folder='templates')
 
 
 # Create Login Page
@@ -30,7 +30,7 @@ def login():
         else:
             flash("That User Doesn`t Exist! Try Again...", category='error')
     return render_template(
-        'login.html',
+        'auth/login.html',
         form=form
     )
 
@@ -79,20 +79,20 @@ def dashboard():
             db.session.commit()
             flash('User Updated Successfully!', category='success')
             return render_template(
-                'dashboard.html',
+                'auth/dashboard.html',
                 user=current_user,
                 form=form
             )
         except Exception as e:
             flash(e)
             return render_template(
-                'dashboard.html',
+                'auth/dashboard.html',
                 user=user,
                 form=form
             )
     else:
         return render_template(
-            'dashboard.html',
+            'auth/dashboard.html',
             user=current_user,
             form=form
         )
@@ -139,7 +139,7 @@ def register():
                 name=form.name.data,
                 email=email,
                 profile_pic=pic_name
-                    )
+            )
             user.set_password(form.password_hash.data)
             try:
                 db.session.add(user)
@@ -160,7 +160,7 @@ def register():
                 {err_message}', category='error')
 
     return render_template(
-            'add_user.html',
+            'auth/add_user.html',
             form=form)
 
 
@@ -199,7 +199,7 @@ def reset_request():
         send_reset_email(user)
         flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('auth.login'))
-    return render_template('reset_request.html', title='Reset Password', form=form)
+    return render_template('auth/reset_request.html', title='Reset Password', form=form)
 
 
 @auth.route("/reset_password/<token>", methods=['GET', 'POST'])
@@ -216,4 +216,4 @@ def reset_token(token):
         db.session.commit()
         flash('Your password has been updated! You are now able to log in', 'success')
         return redirect(url_for('auth.login'))
-    return render_template('reset_token.html', title='Reset Password', form=form)
+    return render_template('auth/reset_token.html', title='Reset Password', form=form)

@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .forms import EmptyForm
-from app.auth.models import User
+from app.views.auth.models import User
 from app.extensions import db
-from app.posts.models import Posts
+from app.views.posts.models import Posts
 
 
-followers = Blueprint('followers', __name__, template_folder='templates/followers')
+followers = Blueprint('followers', __name__, template_folder='templates')
 
 
 @followers.route('/follow/<username>', methods=['POST'])
@@ -54,14 +54,14 @@ def unfollow(username):
 def user(username):
     user = User.query.filter_by(username=username).first()
     form = EmptyForm()
-    return render_template('user.html', user=user, form=form)
+    return render_template('followers/user.html', user=user, form=form)
 
 
 @followers.route('/<username>/posts')
 @login_required
 def user_posts(username):
     user = User.query.filter_by(username=username).first()
-    return render_template('user_posts.html', posts=user.posts)
+    return render_template('followers/user_posts.html', posts=user.posts)
 
 
 @followers.route('/followers/posts')
@@ -70,4 +70,4 @@ def followed_posts():
     posts = current_user.followed_posts
     own = Posts.query.filter_by(poster_id=current_user.id)
     users_posts = posts.union(own).order_by(Posts.date_posted.desc()).all()
-    return render_template('followed_posts.html', users_posts=users_posts)
+    return render_template('followers/followed_posts.html', users_posts=users_posts)

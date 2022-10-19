@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
-from app.posts.models import Posts
-from app.auth.models import User
+from app.views.posts.models import Posts
+from app.views.auth.models import User
 from app.extensions import db
 
 
-api = Blueprint('api', __name__,)
+api = Blueprint('api', __name__)
 
 
 # get all posts

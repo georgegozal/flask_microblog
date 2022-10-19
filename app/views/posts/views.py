@@ -5,7 +5,7 @@ from .forms import PostForm, SearchForm, CommentForm
 from app.extensions import db
 
 
-post_view = Blueprint('post', __name__, template_folder="templates/posts")
+post_view = Blueprint('post', __name__, template_folder="templates")
 
 
 # view all posts
@@ -18,7 +18,7 @@ def list():
 
     like = Like.query.all()
     return render_template(
-        'list.html',
+        'posts/list.html',
         posts=posts,
         like=like)
 
@@ -54,7 +54,7 @@ def post(id):
         except AttributeError:
             flash('Please Log In To Leave a Comment!', category='error')
     return render_template(
-        'post.html',
+        'posts/post.html',
         post=post,
         comments=comments,
         form=form,
@@ -87,7 +87,7 @@ def add():
         flash('Blog Post Submitted Successfully!', category='success')
         return redirect(url_for('post.post', id=post.id))
     return render_template(
-        'add_post.html',
+        'posts/add_post.html',
         form=form
     )
 
@@ -113,7 +113,7 @@ def edit(id):
         # form.slug.data = post.slug
         form.content.data = post.content
         return render_template(
-            'edit.html',
+            'posts/edit.html',
             form=form,
             post=post
         )
@@ -161,7 +161,7 @@ def update_comment(comment_id, post_id):
         form.content.data = comment.content
 
     return render_template(
-        'edit_comment.html',
+        'posts/edit_comment.html',
         post=post,
         comments=comments,
         comment=comment,
@@ -259,7 +259,7 @@ def search():
         posts = posts.filter(Posts.content.like('%' + post.searched + '%'))
         posts = posts.order_by(Posts.title).all()
         return render_template(
-            "search.html",
+            "posts/search.html",
             form=form,
             searched=post.searched,
             posts=posts

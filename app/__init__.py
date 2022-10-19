@@ -2,17 +2,17 @@ from flask import Flask, render_template
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from app.config import Config
-from app.auth.models import UserView, FileView, User
+from app.views.auth.models import UserView, FileView, User
 # from app.followers.models import UserFollowers
-from app.posts.models import Posts, Like, Comments, PostView, CommentView
-from app.commands.commands import add_admin_command, init_db_command
+from app.views.posts.models import Posts, Like, Comments, PostView, CommentView
+from app.commands import add_admin_command, init_db_command
 from app.extensions import db, migrate, login_manager, ckeditor, mail
-from app.api.views import api
-from app.posts.views import post_view
-from app.auth.views import auth
-from app.followers.views import followers
+from app.views.api.views import api
+from app.views.posts.views import post_view
+from app.views.auth.views import auth
+from app.views.followers.views import followers
 # from app.views import app_view
-from app.posts.forms import SearchForm
+from app.views.posts.forms import SearchForm
 
 
 BLUEPRINTS = [post_view, auth, followers, api]
