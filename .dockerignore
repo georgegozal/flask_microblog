@@ -1,5 +1,6 @@
 .microblog
 .pytest_cache
+.idea
 .tox
 .github
 **__pycache__**
