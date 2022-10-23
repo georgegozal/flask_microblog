@@ -1,8 +1,10 @@
 migrations/
 *__pycache__*
 .env
+app/uploads
 app/static/*
 **test/**
 **test.html
 **old**
 .idea
+.venv

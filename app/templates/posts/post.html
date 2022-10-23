@@ -26,7 +26,8 @@
         </a>{{ like|length }}  Likes 
     {% else %}
         <a href="{{ url_for('post.like', id=post.id)}}">
-            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">
+            {#<img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">#}
+            <img src="{{url_for('uploads',filename='like.png')}}" alt="like" title="Like Post" height="28">
         </a>{{ like|length }}  Likes 
     {% endif %}
     <br>
