@@ -14,7 +14,7 @@ def list():
 
     page = request.args.get('page', 1, type=int)
     posts = Posts.query.order_by(Posts.date_posted.desc()).paginate(
-        page, 1, False)
+        page, 3, False)
 
     like = Like.query.all()
     return render_template(

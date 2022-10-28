@@ -42,7 +42,7 @@
             </ul>
             <form method="POST" action="{{url_for('post.search')}}" class="d-flex" role="search">
                 {{ searchform.hidden_tag() }}
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched" value placeholder required>
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
