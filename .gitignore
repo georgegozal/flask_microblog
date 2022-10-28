@@ -2,7 +2,7 @@ migrations/
 *__pycache__*
 .env
 app/uploads
-app/static/uploads**
+app/static/uploads/**
 **test/**
 **test.html
 **old**
