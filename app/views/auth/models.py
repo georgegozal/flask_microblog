@@ -8,6 +8,7 @@ from flask_admin.contrib.fileadmin import FileAdmin
 from app.views.posts.models import Posts
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app.config import Config
+from app.views.followers.models import Follow
 
 
 class User(db.Model, UserMixin):
@@ -43,41 +44,76 @@ class User(db.Model, UserMixin):
             print(e)
             return None
         return User.query.get(user_id)
+    """
+        # start
+        # followers = db.Table('followers',
+        #     db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
+        #     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
+        # )
 
-    followers = db.Table('followers',
-        db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
-        db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
-    )
+        # followed = db.relationship(
+        #     'User',
+        #     secondary=followers,
+        #     primaryjoin=(followers.c.follower_id == id),
+        #     secondaryjoin=(followers.c.followed_id == id),
+        #     backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
-    followed = db.relationship(
-        'User',
-        secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+        # followed_posts = db.relationship(
+        #     'Posts',
+        #     secondary=followers,  # 'join(Posts,User).join(followers)',
+        #     primaryjoin=(followers.c.follower_id == id),
+        #     secondaryjoin=(Posts.poster_id == followers.c.followed_id),
+        #     lazy='dynamic',
+        #     viewonly=True)
 
-    followed_posts = db.relationship(
-        'Posts',
-        secondary=followers,  # 'join(Posts,User).join(followers)',
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(Posts.poster_id == followers.c.followed_id),
+        # def follow(self, user):
+        #     if not self.is_following(user):
+        #         self.followed.append(user)
+
+        # def unfollow(self, user):
+        #     if self.is_following(user):
+        #         self.followed.remove(user)
+        # works
+        # def is_following(self, user):
+        #     try:
+        #         is_following = self.followed.filter_by(username=user.username).count() > 0
+        #         is_following = self.followed.filter_by(followed_id=user.id).count() > 0
+        #     except AttributeError:
+        #         is_following = False
+        #     return is_following
+        # end
+    """
+
+    followed = db.relationship('Follow',
+        foreign_keys=[Follow.follower_id],
+        backref=db.backref('follower', lazy='joined'),
         lazy='dynamic',
-        viewonly=True)
+        cascade='all, delete-orphan')
+
+    followers = db.relationship('Follow',
+        foreign_keys=[Follow.followed_id],
+        backref=db.backref('followed', lazy='joined'),
+        lazy='dynamic',
+        cascade='all, delete-orphan')
+
 
     def follow(self, user):
         if not self.is_following(user):
-            self.followed.append(user)
+            f = Follow(follower=self, followed=user)
+            db.session.add(f)
 
     def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
 
     def is_following(self, user):
-        try:
-            is_following = self.followed.filter_by(username=user.username).count() > 0
-        except AttributeError:
-            is_following = False
-        return is_following
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
 
     def __repr__(self):
         return "<Username %r>" % self.username

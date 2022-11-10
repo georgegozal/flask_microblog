@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
@@ -24,6 +24,7 @@ def login():
             if user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
                 flash("Login Successfully", category="success")
+                session["logged_in"] = True
                 return redirect(url_for('auth.dashboard'))
             else:
                 flash("Wrong Password - Try Again!", category="error")
@@ -40,6 +41,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session["logged_in"] = False
     flash("You Have Been Logged Out!")
     return redirect(url_for('auth.login'))
 
