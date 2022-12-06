@@ -1,21 +1,19 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from app.config import Config
 from app.views.auth.models import UserView, FileView, User
-# from app.followers.models import UserFollowers
 from app.views.posts.models import Posts, Like, Comments, PostView, CommentView
 from app.commands import add_admin_command, init_db_command
-from app.extensions import db, migrate, login_manager, ckeditor, mail
+from app.extensions import db, migrate, login_manager, ckeditor, mail  # bootstrap  # manager
 from app.views.api.views import api
 from app.views.posts.views import post_view
 from app.views.auth.views import auth
 from app.views.followers.views import followers
-# from app.views import app_view
-from app.views.posts.forms import SearchForm
+from app.errors import errors
 
 
-BLUEPRINTS = [post_view, auth, followers, api]
+BLUEPRINTS = [post_view, auth, followers, api, errors]
 COMMANDS = [add_admin_command, init_db_command]
 
 
@@ -28,22 +26,6 @@ def create_app():
     register_extensions(app)
     register_blueprints(app)
     register_admin_panel(app)
-
-    # Search
-    @app.context_processor
-    def base():
-        searchform = SearchForm()
-        return dict(searchform=searchform)
-
-    # Invalid URL
-    @app.errorhandler(404)
-    def page_not_found(e):
-        return render_template('404.html'), 404
-
-    # Internal Server Error
-    @app.errorhandler(500)
-    def internal_server_error(e):
-        return render_template('500.html'), 500
 
     return app
 
@@ -58,6 +40,10 @@ def register_extensions(app):
 
     # Setup Flask-Mail
     mail.init_app(app)
+
+    # bootstrap.init_app(app)
+
+    # manager.init_app(app)
 
     # Setup Flask-CKEditor
     ckeditor.init_app(app)

@@ -8,6 +8,13 @@ from app.extensions import db
 post_view = Blueprint('post', __name__, template_folder="templates")
 
 
+# Search
+@post_view.app_context_processor
+def base():
+    searchform = SearchForm()
+    return dict(searchform=searchform)
+
+
 # view all posts
 @post_view.route('/')
 def list():
