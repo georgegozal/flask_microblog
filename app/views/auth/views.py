@@ -25,7 +25,7 @@ def login():
                 login_user(user, remember=form.remember_me.data)
                 flash("Login Successfully", category="success")
                 session["logged_in"] = True
-                return redirect(url_for('auth.dashboard'))
+                return redirect(request.args.get('next') or url_for('auth.dashboard'))
             else:
                 flash("Wrong Password - Try Again!", category="error")
         else:

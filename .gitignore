@@ -8,3 +8,4 @@ app/static/uploads/*.jpg
 **old**
 .idea
 .venv
+*.sqlite

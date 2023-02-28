@@ -54,7 +54,10 @@ def unfollow(username):
 def user(username):
     user = User.query.filter_by(username=username).first()
     form = EmptyForm()
-    return render_template('followers/user.html', user=user, form=form)
+    if user:
+        return render_template('followers/user.html', user=user, form=form)
+    else:
+        return redirect(url_for('auth.dashboard'))
 
 
 @followers.route('/<username>/posts')
@@ -67,7 +70,10 @@ def user_posts(username):
 @followers.route('/followers/posts')
 @login_required
 def followed_posts():
-    posts = current_user.followed_posts
-    own = Posts.query.filter_by(poster_id=current_user.id)
-    users_posts = posts.union(own).order_by(Posts.date_posted.desc()).all()
+    try:
+        posts = current_user.followed_posts
+        own = Posts.query.filter_by(poster_id=current_user.id)
+        users_posts = posts.union(own).order_by(Posts.date_posted.desc()).all()
+    except AttributeError:
+        users_posts = Posts.query.order_by(Posts.date_posted.desc()).all()
     return render_template('followers/followed_posts.html', users_posts=users_posts)
