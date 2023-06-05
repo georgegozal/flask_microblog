@@ -19,7 +19,7 @@
         By: <a href="{{ url_for('followers.user', username=post.poster.username) }}" >{{ post.poster.name }}</a> <br>
         Date Posted: {{ post.date_posted }} <br><br>
     </small>
-    <p>{{ post.content|safe }}</p>
+    <p>{{ post.content[:600]|safe }}</p>
     {# TODO: displey short text instead of full article, maybe you can use fixed div #}
     {#<p>{{ post.content.splitlines()[:15] | join('\n') | safe }}...</p>
     <p>{{ article.content|truncate(5, True, "...") }}</p>#}

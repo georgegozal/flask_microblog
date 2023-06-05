@@ -19,7 +19,7 @@
         By: <a href="{{ url_for('followers.user', username=post.poster.username) }}" >{{ post.poster.name }}</a> <br>
         Date Posted: {{ post.date_posted }} <br><br>
     </small>
-    {{ post.content|safe }} <br>
+    {{ post.content[:600]|safe }} <br>
 
     {#<a href="{{ url_for('post.like', id=post.id)}}">
         <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" height="18">
