@@ -9,7 +9,6 @@ class Follow(db.Model):
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-
     def __repr__(self) -> str:
         return f'follower_id: {self.follower_id}\nfollowed_id: {self.followed_id}'
 
