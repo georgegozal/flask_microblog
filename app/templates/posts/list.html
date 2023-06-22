@@ -42,10 +42,11 @@
 </div>
 
 {% endfor %}
-<div class="pagination">
+
+<div class="pagination justify-content-center">
     {% if posts.has_prev %}
         <span>
-            <a class='page-number' href="{{ url_for('post.list', page=posts.prev_num) }}">
+            <a class='page-link' href="{{ url_for('post.list', page=posts.prev_num) }}">
                 {{ '<<<' }}
             </a>
         </span>
@@ -53,28 +54,21 @@
     {% for number in posts.iter_pages() %}
         {% if posts.page != number %}
             <span>
-                    <a class='page-number'
-                        href="{{ url_for('post.list', page=number) }}">
+                <a class='page-link' href="{{ url_for('post.list', page=number) }}">
                     {{ number }}
-                    </a>
+                </a>
             </span>
         {% else %}
-            <span>{{ number }}</span>
+            <span class="page-link current-page">{{ number }}</span>
         {% endif %}
     {% endfor %}
     {% if posts.has_next %}
         <span>
-            <a class='page-number'
-                href="{{ url_for('post.list', page=posts.next_num) }}">
+            <a class='page-link' href="{{ url_for('post.list', page=posts.next_num) }}">
                 {{ '>>>' }}
             </a>
         </span>
     {% endif %}
 </div>
-{#% if prev_page %}
-    <a href="{{ prev_page }}">Newer posts</a>
-{% endif %}
-{% if next_page %}
-    <a href="{{ next_page }}">Older posts</a>
-{% endif %#}
+
 {% endblock %}
