@@ -193,6 +193,7 @@ def delete_comment(post_id, comment_id):
         flash("You Aren`t Authorized To Delete That Comment!", category='error')
         return redirect(url_for('post.post', id=post_id))
 
+
 @post_view.route('/post/<post_id>/comments/<id>/like')
 def like_comment(post_id, id):
     comment = Comments.query.get_or_404(id)

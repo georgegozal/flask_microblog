@@ -7,6 +7,7 @@ from flask_login import login_required, current_user
 
 api_posts = Blueprint('api_posts', __name__)
 
+
 # get all posts
 @api_posts.route('/api/posts', methods=['GET'])
 def get_all_posts():
@@ -22,6 +23,7 @@ def get_all_posts():
         }
         posts_list.append(p)
     return jsonify(posts_list)
+
 
 @api_posts.route("/api/posts/like", methods=['POST'])
 @login_required

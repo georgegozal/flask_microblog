@@ -19,6 +19,7 @@ def get_user(id):
     }
     return jsonify(u)
 
+
 @api.route('/api/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -33,6 +34,7 @@ def get_users():
         }
         user_list.append(u)
     return jsonify(user_list)
+
 
 @api.route('/api/users/<int:id>/followers', methods=['GET'])
 def get_followers(id):
@@ -49,6 +51,7 @@ def get_followers(id):
         user_list.append(u)
     return jsonify(user_list)
 
+
 @api.route('/api/users/<int:id>/followed', methods=['GET'])
 def get_followed(id):
     user = User.query.get_or_404(id)
@@ -64,6 +67,7 @@ def get_followed(id):
         user_list.append(u)
     return jsonify(user_list)
 
+
 @api.route('/api/users', methods=['POST'])
 def create_user():
     request_data = request.get_json()
@@ -77,6 +81,7 @@ def create_user():
     db.session.commit()
 
     user = User.query.order_by(User.id.desc()).limit(1).first()
+
 
 @api.route('/users/<int:id>', methods=['PUT'])
 def update_user(id):
