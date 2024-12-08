@@ -2,8 +2,8 @@
 {% block head %}
 <style>
     a {
-    text-decoration: none;
-}
+        text-decoration: none;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -14,59 +14,62 @@
     </div>
     <div class="card-body">
         <p class="card-text">
-            <div class="container">
-                <div class="row">
-                    <div class="col-8">
-                        <strong>Name: </strong>{{ user.name }}<br>
-                        <strong>About Author: </strong>{{ user.about_author}}<br>
-                        <br>
-                        {% if user.about_author %}
-                            <p>{{ user.about_author }}</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-8">
+                    <strong>Name: </strong>{{ user.name }}<br>
+                    <strong>About Author: </strong>{{ user.about_author}}<br>
+                    <br>
+                    {% if user.about_author %}
+                    <p>{{ user.about_author }}</p>
+                    {% endif %}
+                    {#<a href="{{url_for('followers.user_posts',username=user.username)}}">{{user.name}}`s Posts</a>
+                    {{user.posts|length}}#}
+
+                    <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.
+
+                        {% if current_user.is_authenticated and user != current_user and
+                        user.is_following(current_user) %}
+                        | <span class="label label-default">Follows you</span>
                         {% endif %}
-                        <a href="{{url_for('followers.user_posts',username=user.username)}}">{{user.name}}`s Posts</a> {{user.posts|length}}
+                    </p>
 
-                        <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.
+                    {% if user == current_user %}
+                    <p><a href="{{ url_for('auth.dashboard') }}">Edit your profile</a></p>
+                    {% elif current_user.is_following(user) %}
+                    <p>
+                    <form action="{{ url_for('followers.unfollow', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Unfollow', class="btn btn-primary btn-sm") }}
+                    </form>
+                    </p>
 
-                            {% if current_user.is_authenticated and user != current_user and
-                                user.is_following(current_user) %}
-                                | <span class="label label-default">Follows you</span>
-                            {% endif %}
-                        </p>
-
-                        {% if user == current_user %}
-                            <p><a href="{{ url_for('auth.dashboard') }}">Edit your profile</a></p>
-                        {% elif current_user.is_following(user) %}
-                        <p>
-                            <form action="{{ url_for('followers.unfollow', username=user.username) }}" method="post">
-                                {{ form.hidden_tag() }}
-                                {{ form.submit(value='Unfollow', class="btn btn-primary btn-sm") }}
-                            </form>
-                        </p>
-                        
-                        {% else %}
-                        <p>
-                            <form action="{{ url_for('followers.follow', username=user.username) }}" method="post">
-                                {{ form.hidden_tag() }}
-                                {{ form.submit(value='Follow', class="btn btn-primary btn-sm") }}
-                            </form>
-                        </p>
-                        {% endif %}
-
-                    </div>
-                    <div class="col-4">
-                        {% if user.profile_pic %}
-                            <img src="{{ url_for('static', filename='uploads/' + user.profile_pic)}}" alt="default_profile_pic" height="150" align="right">
-                        {% else %}
-                            <img src="{{url_for('static',filename='uploads/default-profile-picture.jpeg')}}" alt="default_profile_pic" height="150" align="right">
-                        {% endif %}
-                    </div>
+                    {% else %}
+                    <p>
+                    <form action="{{ url_for('followers.follow', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Follow', class="btn btn-primary btn-sm") }}
+                    </form>
+                    </p>
+                    {% endif %}
 
                 </div>
+                <div class="col-4">
+                    {% if user.profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic)}}" alt="default_profile_pic"
+                        height="150" align="right">
+                    {% else %}
+                    <img src="{{url_for('static',filename='uploads/default-profile-picture.jpeg')}}"
+                        alt="default_profile_pic" height="150" align="right">
+                    {% endif %}
+                </div>
+
             </div>
+        </div>
         </p>
         {#<a href="{{url_for('view.update1',id=user.id)}}" class="btn  btn-secondary btn-sm">Update Profile</a>
 
-    #}
+        #}
     </div>
 </div>
 {% endblock %}

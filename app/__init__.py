@@ -6,14 +6,15 @@ from app.views.auth.models import UserView, FileView, User
 from app.views.posts.models import Posts, Like, Comments, PostView, CommentView
 from app.commands import add_admin_command, init_db_command
 from app.extensions import db, migrate, login_manager, ckeditor, mail  # bootstrap  # manager
-from app.views.api.views import api
+from app.views.api.auth import api
+from app.views.api.posts import api_posts
 from app.views.posts.views import post_view
 from app.views.auth.views import auth
 from app.views.followers.views import followers
 from app.errors import errors
 
 
-BLUEPRINTS = [post_view, auth, followers, api, errors]
+BLUEPRINTS = [post_view, auth, followers, api, api_posts, errors]
 COMMANDS = [add_admin_command, init_db_command]
 
 
@@ -27,6 +28,16 @@ def create_app():
     register_blueprints(app)
     register_admin_panel(app)
 
+    @app.shell_context_processor
+    def make_shell_context():
+        return {
+            "db": db,
+            "Users": User,
+            "Posts": Posts,
+            "Comments": Comments,
+            "Likes": Like,
+            "config": Config,
+        }
     return app
 
 

@@ -1,0 +1,19 @@
+.like-div {
+    display: flex;
+}
+
+.like-btn {
+    cursor: pointer;
+}
+
+.like-btn:not(.active) {
+    display: none;
+};
+
+.like-btn.active {
+    display: block;
+}
+
+.like-btn.liked {
+    margin-left: 8px;
+}

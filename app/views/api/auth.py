@@ -7,23 +7,6 @@ from app.extensions import db
 api = Blueprint('api', __name__)
 
 
-# get all posts
-@api.route('/api/posts', methods=['GET'])
-def get_all_posts():
-    posts = Posts.query.all()
-    posts_list = []
-    for post in posts:
-        p = {
-            "id": post.id,
-            "title": post.title,
-            "date_posted": post.date_posted,
-            "author": User.query.get_or_404(post.poster_id).username,
-            "content": post.content
-        }
-        posts_list.append(p)
-    return jsonify(posts_list)
-
-
 @api.route('/api/users/<int:id>', methods=['GET'])
 def get_user(id):
     user = User.query.get_or_404(id)
@@ -35,7 +18,6 @@ def get_user(id):
         'role': user.role
     }
     return jsonify(u)
-
 
 @api.route('/api/users', methods=['GET'])
 def get_users():
@@ -52,7 +34,6 @@ def get_users():
         user_list.append(u)
     return jsonify(user_list)
 
-
 @api.route('/api/users/<int:id>/followers', methods=['GET'])
 def get_followers(id):
     user = User.query.get_or_404(id)
@@ -67,7 +48,6 @@ def get_followers(id):
         }
         user_list.append(u)
     return jsonify(user_list)
-
 
 @api.route('/api/users/<int:id>/followed', methods=['GET'])
 def get_followed(id):
@@ -84,7 +64,6 @@ def get_followed(id):
         user_list.append(u)
     return jsonify(user_list)
 
-
 @api.route('/api/users', methods=['POST'])
 def create_user():
     request_data = request.get_json()
@@ -98,7 +77,6 @@ def create_user():
     db.session.commit()
 
     user = User.query.order_by(User.id.desc()).limit(1).first()
-
 
 @api.route('/users/<int:id>', methods=['PUT'])
 def update_user(id):

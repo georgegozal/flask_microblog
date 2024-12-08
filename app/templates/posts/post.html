@@ -20,16 +20,19 @@
 
     {{ post.content|safe }} 
     <br>
-    {% if can_like == True %}
-        <a href="{{ url_for('post.like', id=post.id)}}">
-            <img src="{{url_for('static',filename='uploads/liked.png')}}" alt="liked" title="Unike Post" height="25">
-        </a>{{ like|length }}  Likes 
-    {% else %}
-        <a href="{{ url_for('post.like', id=post.id)}}">
-            {#<img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">#}
-            <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Post" height="28">
-        </a>{{ like|length }}  Likes 
-    {% endif %}
+    <div class="like-div">
+        <img src="{{url_for('static',filename='uploads/liked.png')}}"
+              class="like-btn liked {% if can_like != True %}active{% endif %}"
+              alt="liked"
+              title="Unike Post"
+              height="25">&nbsp;
+        <img src="{{url_for('static',filename='uploads/like.png')}}"
+             class="like-btn like {% if can_like == True %}active{% endif %}"
+             alt="like"
+             title="Like Post"
+             height="28">
+        <p id="like-count">&nbsp;{{ like|length }}  Likes</p>
+    </div>
     <br>
     <br><br>
 
@@ -46,7 +49,7 @@
     {% for comment in comments %}
         {% if comment.post_id == post.id %}
             {% if comment.commenter.name %}
-                <h6><span style="color:#29a329">{{ comment.commenter.name }}:</span></h4>
+                <h6><span style="color:#29a329">{{ comment.commenter.name }}:</span></h6>
                 <p>{{ comment.content }}</p>{{ comment.date_posted }}
                 {% if comment.commenter.id == current_user.id %}
                     <a href="{{ url_for('post.delete_comment', post_id=post.id, comment_id=comment.id) }}" title="Delete Comment">
@@ -81,9 +84,6 @@
                     <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
                 </a>{{ comment.likes|length }}  Likes
             {% endif %}
-
-
-
         {% else %}
             <a href="{{ url_for('post.like_comment',post_id=post.id, id=comment.id)}}">
                 <img src="{{url_for('static',filename='uploads/like.png')}}" alt="like" title="Like Comment" height="20">
@@ -91,7 +91,6 @@
         {% endif %}
         <br><br>
     {% endfor %}
-
 </div>
 
 <a href="{{ url_for('post.list') }}" class="btn btn-outline-secondary btn-sm">Back To Blog</a>
@@ -99,5 +98,45 @@
     <a href="{{ url_for('post.edit', id=post.id) }}" class="btn btn-outline-secondary btn-sm">Update</a>
     <a href="{{ url_for('post.delete', id=post.id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a>
 {% endif %}
+{% endblock %}
 
+{% block script %}
+<script>
+    let likeBtn = document.querySelector(".like-btn.like");
+    let unlikeBtn = document.querySelector(".like-btn.liked");
+    function likeHandler(){
+        let data = {
+            postId: {{post.id}},
+            //userId: {{current_user.id}}
+        };
+        console.log(data);
+        fetch('/api/posts/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            console.log(response, response.status);
+            if (response.ok){
+                return response.json();
+            }
+        }).then(
+            data => {
+                console.log(data);
+                document.querySelector("#like-count").innerHTML = `&nbsp;${data.like_count} Likes`
+                if (data.message.includes('add like')){
+                    likeBtn.style.display = 'none';
+                    unlikeBtn.style.display = 'block';
+                } else {
+                    likeBtn.style.display = 'block';
+                    unlikeBtn.style.display = 'none';
+                }
+            }
+        )
+    };
+    likeBtn.addEventListener("click", likeHandler);
+    unlikeBtn.addEventListener("click", likeHandler);
+
+</script>
 {% endblock %}

@@ -52,7 +52,7 @@ class Like(db.Model):
                     ))
 
     def __repr__(self):
-        return f'{self.user.username}'
+        return f'{self.user.username} likes {self.post}'
 
 
 class PostView(ModelView):

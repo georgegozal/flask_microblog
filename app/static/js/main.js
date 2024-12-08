@@ -1,10 +1,9 @@
 let header = document.getElementsByTagName('h3')[0]
 
-header.addEventListener(
-    "mouseover",
-    alert("header")
-)
 
+//function likeHandler(){
+//    console.log("likeHandler");
+//};
 
 
 //   window.fbAsyncInit = function() {

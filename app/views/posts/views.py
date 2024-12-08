@@ -21,13 +21,11 @@ def list():
 
     page = request.args.get('page', 1, type=int)
     posts = Posts.query.order_by(Posts.date_posted.desc()).paginate(
-        page, 3, False)
+        page=page, per_page=3)
 
-    like = Like.query.all()
     return render_template(
         'posts/list.html',
-        posts=posts,
-        like=like)
+        posts=posts)
 
 
 # view one post # add  comments
@@ -41,7 +39,8 @@ def post(id):
     try:
         can_like = Like.query.filter_by(
             author=current_user.id,
-            post_id=post.id).count() > 0
+            post_id=post.id).count() == 0
+        print("can_like")
     except AttributeError:
         can_like = False
 
@@ -193,29 +192,6 @@ def delete_comment(post_id, comment_id):
     else:
         flash("You Aren`t Authorized To Delete That Comment!", category='error')
         return redirect(url_for('post.post', id=post_id))
-
-
-@post_view.route('/posts/<id>/like')
-@login_required
-def like(id):
-    # if request.method['POST']:
-    post = Posts.query.get_or_404(id)
-    like = Like.query.filter_by(
-        author=current_user.id, post_id=id).first()
-
-    if not post:
-        return jsonify({'error': 'Post does not exist.'}, 400)
-    elif like:
-        db.session.delete(like)
-        db.session.commit()
-    else:
-        like = Like(author=current_user.id, post_id=id)
-        db.session.add(like)
-        db.session.commit()
-    return redirect(url_for('post.post', id=post.id))
-    # return jsonify({"likes": len(post.likes),
-    # "liked": current_user.id in map(lambda x: x.author, post.likes)})
-
 
 @post_view.route('/post/<post_id>/comments/<id>/like')
 def like_comment(post_id, id):
